@@ -1,0 +1,31 @@
+CREATE TABLE UserData (
+    userId TEXT NOT NULL PRIMARY KEY
+);
+
+countUserData:
+SELECT COUNT(*) FROM UserData;
+
+insertUserData:
+INSERT INTO UserData (userId) VALUES (?);
+
+deleteUserData:
+DELETE FROM UserData WHERE userId = ?;
+
+getAllUserData:
+SELECT * FROM UserData;
+
+CREATE TABLE Account (
+    accountId TEXT NOT NULL PRIMARY KEY,
+    userId TEXT NOT NULL,
+    name TEXT NOT NULL,
+    currency TEXT NOT NULL
+);
+
+insertAccount:
+INSERT INTO Account (accountId, userId, name, currency) VALUES (?, ?, ?, ?);
+
+deleteAccountByUserId:
+DELETE FROM Account WHERE userId = ?;
+
+getAccounts:
+SELECT accountId, userId, name, currency FROM Account WHERE userId = ?;
