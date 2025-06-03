@@ -3,11 +3,8 @@ package com.monoexpenses.di
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.monoexpenses.Database
-import com.monoexpenses.data.accounts.BankAccountsLocalDataSource
-import com.monoexpenses.data.accounts.BankAccountsLocalDataSourceImpl
 import com.monoexpenses.data.database.DBProvider
-import com.monoexpenses.data.user.LocalUserDataSource
-import com.monoexpenses.data.user.LocalUserDataSourceImpl
+import com.monoexpenses.data.di.sqldelightDataModule
 import com.monoexpenses.data.user.SecureUserDataSource
 import com.monoexpenses.data.user.SecureUserDataSourceImpl
 import org.koin.core.module.Module
@@ -23,7 +20,6 @@ internal actual fun getPlatformModule(): Module = module {
             Database(driver)
         }
     }
-    singleOf(::LocalUserDataSourceImpl).bind<LocalUserDataSource>()
+    includes(sqldelightDataModule)
     singleOf(::SecureUserDataSourceImpl).bind<SecureUserDataSource>()
-    singleOf(::BankAccountsLocalDataSourceImpl).bind<BankAccountsLocalDataSource>()
 }

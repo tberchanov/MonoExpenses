@@ -59,6 +59,9 @@ kotlin {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.sqldelight.android)
+                implementation(libs.koin.android)
+                implementation(libs.multiplatform.settings)
+                implementation(libs.androidx.security.crypto)
             }
         }
 
@@ -92,7 +95,7 @@ kotlin {
             dependsOn(commonMain.get())
 
             dependencies {
-
+                implementation(libs.koin.core)
             }
         }
         androidMain.get().dependsOn(sqldelightMain)

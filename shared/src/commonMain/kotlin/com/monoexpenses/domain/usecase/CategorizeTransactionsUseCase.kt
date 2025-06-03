@@ -5,15 +5,10 @@ import com.monoexpenses.domain.model.CategorizedTransactions
 import com.monoexpenses.domain.model.Category
 import com.monoexpenses.domain.model.CategoryFilter
 import com.monoexpenses.domain.model.Transaction
-import com.monoexpenses.domain.repository.CategoryRepository
 
-class CategorizeTransactionsUseCase(
-    private val categoryRepository: CategoryRepository
-) {
+class CategorizeTransactionsUseCase {
 
-    fun execute(transactions: List<Transaction>): CategorizationData {
-        val categories = categoryRepository.getCategories()
-
+    fun execute(transactions: List<Transaction>, categories: List<Category>): CategorizationData {
         val uncategorizedTransactions = mutableListOf<Transaction>()
         val categoriesMap = mutableMapOf<Category, MutableList<Transaction>>()
 
@@ -44,13 +39,7 @@ class CategorizeTransactionsUseCase(
     }
 
     private fun calcTotalExpenses(transactions: List<Transaction>): Long {
-        var totalExpenses = 0L
-        transactions.forEach {
-            if (it.amount < 0) {
-                totalExpenses += it.amount
-            }
-        }
-        return totalExpenses
+        return transactions.sumOf { it.amount }
     }
 
     private fun getTransactionCategory(
@@ -78,7 +67,7 @@ class CategorizeTransactionsUseCase(
             val mccMatching = filter.transactionMcc?.equals(transaction.mcc) ?: true
             val amountMatching = filter.transactionAmount?.equals(transaction.amount) ?: true
             val descriptionMatching =
-                filter.transactionDescription?.equals(transaction.description) ?: true
+                filter.transactionDescription?.let { transaction.description.contains(it) } ?: true
             mccMatching && amountMatching && descriptionMatching
         }
     }

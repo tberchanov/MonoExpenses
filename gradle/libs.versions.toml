@@ -1,7 +1,7 @@
 [versions]
 agp = "8.5.2"
 android-compileSdk = "35"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "35"
 androidx-activityCompose = "1.10.1"
 androidx-appcompat = "1.7.0"
@@ -11,7 +11,8 @@ androidx-espresso-core = "3.6.1"
 androidx-lifecycle = "2.8.4"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
-compose-multiplatform = "1.7.3"
+compose-multiplatform = "1.8.0"
+compose-multiplatform-calendar = "2.7.0"
 credentialSecureStorage = "1.0.0"
 junit = "4.13.2"
 kermit = "2.0.5"
@@ -21,9 +22,13 @@ kotlinx-coroutines = "1.10.2"
 kotlinxDatetime = "0.6.1"
 logback = "1.5.18"
 ktor = "3.1.2"
+multiplatformSettings = "1.3.0"
 sqldelight = "2.0.2"
+securityCryptoKtx = "1.0.0"
 
 [libraries]
+compose-material3 = { module = "androidx.compose.material3:material3", version = "1.3.2" }
+compose-multiplatform-calendar = { module = "com.kizitonwose.calendar:compose-multiplatform", version.ref = "compose-multiplatform-calendar" }
 credential-secure-storage = { module = "com.microsoft:credential-secure-storage", version.ref = "credentialSecureStorage" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -58,10 +63,12 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-sqljs = { module = "app.cash.sqldelight:sqljs-driver", version.ref = "sqldelight" }
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCryptoKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

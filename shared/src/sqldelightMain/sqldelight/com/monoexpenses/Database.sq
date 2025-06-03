@@ -1,4 +1,4 @@
-CREATE TABLE UserData (
+CREATE TABLE IF NOT EXISTS UserData (
     userId TEXT NOT NULL PRIMARY KEY
 );
 
@@ -14,7 +14,7 @@ DELETE FROM UserData WHERE userId = ?;
 getAllUserData:
 SELECT * FROM UserData;
 
-CREATE TABLE Account (
+CREATE TABLE IF NOT EXISTS Account (
     accountId TEXT NOT NULL PRIMARY KEY,
     userId TEXT NOT NULL,
     name TEXT NOT NULL,

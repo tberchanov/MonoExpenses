@@ -1,9 +1,12 @@
 package com.monoexpenses.presentation.home.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -29,35 +32,51 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun Header(
     padding: Dp,
     onLoadClick: () -> Unit,
-    onAddBankAccountsClick: () -> Unit
+    onAddBankAccountsClick: () -> Unit,
+    selectedDateMessage: String,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(AppColors.Primary)
-            .shadow(4.dp)
-            .padding(padding),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            "Monthly Expenses Analyzer",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Start,
-            modifier = Modifier.weight(1.0f),
-        )
-        IconButton(onClick = {
-            onAddBankAccountsClick()
-        }, modifier = Modifier.padding(end = 8.dp)) {
-            Icon(painterResource(Res.drawable.add_card_icon), null, tint = Color.White)
-        }
-        Button(
-            onClick = onLoadClick, colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppColors.AccentColor,
-            )
+    Box {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(AppColors.Primary)
+                .shadow(4.dp)
+                .padding(padding),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Load", color = Color.White)
+            Text(
+                "Expenses Analyzer",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.weight(1.0f),
+            )
+            IconButton(onClick = {
+                onAddBankAccountsClick()
+            }, modifier = Modifier.padding(end = 8.dp)) {
+                Icon(painterResource(Res.drawable.add_card_icon), null, tint = Color.White)
+            }
+            Button(
+                onClick = onLoadClick, colors = ButtonDefaults.buttonColors(
+                    backgroundColor = AppColors.AccentColor,
+                )
+            ) {
+                Text("Load", color = Color.White)
+            }
+        }
+        if (selectedDateMessage.isNotEmpty()) {
+            Text(
+                selectedDateMessage,
+                modifier = Modifier.align(Alignment.Center)
+                    .border(
+                        width = 1.dp,
+                        shape = RoundedCornerShape(10.dp),
+                        color = Color.White,
+                    )
+                    .padding(4.dp),
+                color = Color.White,
+            )
         }
     }
 }
@@ -69,5 +88,6 @@ fun HeaderPreview() {
         padding = 14.dp,
         onLoadClick = {},
         onAddBankAccountsClick = {},
+        "May 02 - Jun 24",
     )
 }

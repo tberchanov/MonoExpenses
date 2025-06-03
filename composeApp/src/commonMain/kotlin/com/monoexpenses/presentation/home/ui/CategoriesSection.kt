@@ -34,16 +34,32 @@ fun Categories(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(AppColors.ListHeaderColor)
-                .padding(4.dp),
+                .background(AppColors.ListHeaderColor),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Categories", fontWeight = FontWeight.Bold)
+            Text(
+                "Categories",
+                modifier = Modifier.padding(horizontal = 12.dp),
+                fontWeight = FontWeight.Bold,
+            )
+            // TODO implement categories configuration
+            /*IconButton(
+                onClick = {
+//                onAddBankAccountsClick()
+                },
+            ) {
+                Icon(painterResource(Res.drawable.settings), null, tint = Color.Black)
+            }*/
         }
         Divider()
         ExpandableLazyColumn(
-            expandableItems = categorizedTransactions.map { ExpandableItem(it, it.category.id) },
+            expandableItems = categorizedTransactions.map {
+                ExpandableItem(
+                    it,
+                    it.category.id,
+                )
+            },
             collapsedItemContent = { CategoryItem(it.data, it.isExpanded) },
             expandedItemContent = { CategoryTransactions(it.data) },
         )

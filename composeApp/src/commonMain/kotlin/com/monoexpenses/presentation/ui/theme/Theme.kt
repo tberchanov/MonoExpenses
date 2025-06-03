@@ -11,6 +11,8 @@ object AppColors {
     val DividerColor = Color(0xFFc1c9c9)
     val ListHeaderColor = Color(0xFFE6ECEC)
     val AccentColor = Color(0xFF1E90A6)
+    val example4GrayPast = Color(0xFFBEBEBE)
+    val example4Gray = Color(0xFF474747)
 }
 
 private val LightColorPalette = lightColors(

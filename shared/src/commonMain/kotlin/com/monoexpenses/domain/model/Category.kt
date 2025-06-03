@@ -8,7 +8,6 @@ data class Category(
 
 
 data class CategoryFilter(
-    val id: String,
     val transactionMcc: Int? = null,
     val transactionDescription: String? = null,
     val transactionAmount: Long? = null,

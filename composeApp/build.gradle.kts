@@ -18,7 +18,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -29,13 +29,13 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm("desktop") {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
         }
     }
-    
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
@@ -55,10 +55,10 @@ kotlin {
         }
         binaries.executable()
     }
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -80,6 +80,8 @@ kotlin {
             implementation(libs.kermit)
             implementation(projects.shared)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.compose.multiplatform.calendar)
+            implementation(compose.material3)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -87,8 +89,14 @@ kotlin {
         }
         wasmJsMain.dependencies {
             // sqldelight is not supporting wasmJs
-            configurations["wasmJsMainImplementation"].exclude(group = "app.cash.sqldelight", module = "runtime")
-            configurations["wasmJsMainImplementation"].exclude(group = "app.cash.sqldelight", module = "async-extensions")
+            configurations["wasmJsMainImplementation"].exclude(
+                group = "app.cash.sqldelight",
+                module = "runtime"
+            )
+            configurations["wasmJsMainImplementation"].exclude(
+                group = "app.cash.sqldelight",
+                module = "async-extensions"
+            )
         }
     }
 }

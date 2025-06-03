@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +24,7 @@ fun UncategorizedExpenses(
     modifier: Modifier = Modifier,
     total: String,
     transactions: List<Transaction>,
+    onMoveToCategoryClicked: (Transaction) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -37,7 +36,7 @@ fun UncategorizedExpenses(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(AppColors.ListHeaderColor)
-                .padding(4.dp),
+                .padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -46,16 +45,19 @@ fun UncategorizedExpenses(
         }
         Divider()
         TransactionsHeader()
-        LazyColumn(
+        VerticalList(
             modifier = Modifier.background(Color(0xFFF0F4F4))
                 .fillMaxHeight(),
-        ) {
-            items(
-                items = transactions,
-                key = { it.id },
-            ) { transaction ->
-                TransactionItem(transaction)
-            }
+            items = transactions,
+            key = { it.id },
+        ) { transaction ->
+            TransactionItem(
+                transaction,
+                showContextMenu = true,
+                onMoveToCategoryClicked = {
+                    onMoveToCategoryClicked(transaction)
+                }
+            )
         }
     }
 }

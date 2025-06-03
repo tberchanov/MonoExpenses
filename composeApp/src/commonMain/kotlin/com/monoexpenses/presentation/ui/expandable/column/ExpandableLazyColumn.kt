@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +27,11 @@ fun <T> ExpandableLazyColumn(
     collapsedItemContent: @Composable (ExpandableItem<T>) -> Unit,
     expandedItemContent: @Composable (ExpandableItem<T>) -> Unit,
 ) {
-    var state by remember { mutableStateOf(expandableItems) }
+    var state by mutableStateOf(expandableItems)
 
-    LazyColumn(modifier) {
+    LazyColumn(
+        modifier,
+    ) {
         itemsIndexed(
             state,
             { _, item -> item.id }

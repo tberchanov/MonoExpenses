@@ -13,15 +13,20 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.monoexpenses.domain.model.CategorizationData
+import com.monoexpenses.domain.model.Category
+import com.monoexpenses.domain.model.Transaction
 import com.monoexpenses.presentation.add.accounts.ui.AddAccountsDialog
 import com.monoexpenses.presentation.home.HomeViewModel
+import com.monoexpenses.presentation.home.ui.calendar.CalendarDialog
 import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatMoney
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,6 +36,7 @@ private val CONTENT_PADDING = 14.dp
 @Composable
 fun HomeScreen() {
     val viewModel = koinViewModel<HomeViewModel>()
+    val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -41,18 +47,23 @@ fun HomeScreen() {
         Header(
             padding = CONTENT_PADDING,
             onLoadClick = {
-                viewModel.loadData()
+                viewModel.onLoadClick()
             },
             onAddBankAccountsClick = {
                 viewModel.displayAddBankAccount()
             },
+            selectedDateMessage = state.selectedDateMessage,
         )
-
-        val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
         state.apply {
             if (categorizationData != null) {
-                HomeData(categorizationData)
+                HomeData(
+                    categorizationData,
+                    categories,
+                    onMoveTransactionToCategory = { transaction, category ->
+                        viewModel.moveTransactionToCategory(transaction, category)
+                    }
+                )
             }
             if (loading != null) {
                 HomeLoading(loading)
@@ -66,10 +77,20 @@ fun HomeScreen() {
                 )
             }
             if (showAddBankAccount) {
-                HomeAddBankAccount(
+                AddAccountsDialog(
                     onDismiss = {
                         viewModel.dismissAddBankAccount()
                     }
+                )
+            }
+            if (showCalendarDialog) {
+                CalendarDialog(
+                    onDismiss = {
+                        viewModel.dismissCalendar()
+                    },
+                    onDateSelected = { startDate, endDate ->
+                        viewModel.loadData(startDate, endDate)
+                    },
                 )
             }
         }
@@ -77,16 +98,12 @@ fun HomeScreen() {
 }
 
 @Composable
-fun HomeAddBankAccount(
-    onDismiss: () -> Unit
+fun HomeData(
+    categorizationData: CategorizationData,
+    categories: List<Category>,
+    onMoveTransactionToCategory: (Transaction, Category) -> Unit,
 ) {
-    AddAccountsDialog(
-        onDismiss = onDismiss,
-    )
-}
-
-@Composable
-fun HomeData(categorizationData: CategorizationData) {
+    var moveTransactionToCategory: Transaction? by remember { mutableStateOf(null) }
     Row {
         UncategorizedExpenses(
             modifier = Modifier.weight(1f)
@@ -97,10 +114,23 @@ fun HomeData(categorizationData: CategorizationData) {
                 )
             },
             transactions = categorizationData.uncategorizedTransactions,
+            onMoveToCategoryClicked = { transaction ->
+                moveTransactionToCategory = transaction
+            }
         )
         Categories(
             modifier = Modifier.weight(1f).padding(CONTENT_PADDING),
             categorizedTransactions = categorizationData.categorizedTransactions,
+        )
+    }
+    moveTransactionToCategory?.let { transaction ->
+        MoveTransactionToCategoryDialog(
+            transaction = transaction,
+            categories = categories,
+            onDismiss = { moveTransactionToCategory = null },
+            onMove = { category ->
+                onMoveTransactionToCategory(transaction, category)
+            }
         )
     }
 }
