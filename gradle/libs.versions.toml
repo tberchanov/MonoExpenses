@@ -11,7 +11,7 @@ androidx-espresso-core = "3.6.1"
 androidx-lifecycle = "2.8.4"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
-compose-multiplatform = "1.8.0"
+compose-multiplatform = "1.8.1"
 compose-multiplatform-calendar = "2.7.0"
 credentialSecureStorage = "1.0.0"
 junit = "4.13.2"
@@ -25,6 +25,7 @@ ktor = "3.1.2"
 multiplatformSettings = "1.3.0"
 sqldelight = "2.0.2"
 securityCryptoKtx = "1.0.0"
+androidx-navigation = "2.9.0-beta01"
 
 [libraries]
 compose-material3 = { module = "androidx.compose.material3:material3", version = "1.3.2" }
@@ -69,6 +70,7 @@ sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref 
 sqldelight-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-sqljs = { module = "app.cash.sqldelight:sqljs-driver", version.ref = "sqldelight" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCryptoKtx" }
+androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

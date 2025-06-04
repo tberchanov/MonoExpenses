@@ -36,6 +36,7 @@ task.
 To run **WasmJs** exclude task `generateCommonMainDatabaseInterface`.
 
 For example:
-`./gradlew :shared:compileKotlinWasmJs -x generateCommonMainDatabaseInterface`
+`./gradlew wasmJsBrowserDevelopmentRun -x generateCommonMainDatabaseInterface`
 
 Make sure that directory is deleted: `MonoExpenses/shared/build/generated/sqldelight`
+`rm -rf shared/build/generated/sqldelight`

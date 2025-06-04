@@ -1,14 +1,18 @@
 package com.monoexpenses.domain.usecase
 
+import co.touchlab.kermit.Logger
 import com.monoexpenses.domain.model.CategorizationData
 import com.monoexpenses.domain.model.CategorizedTransactions
 import com.monoexpenses.domain.model.Category
 import com.monoexpenses.domain.model.CategoryFilter
 import com.monoexpenses.domain.model.Transaction
 
+private const val TAG = "CategorizeTransactionsUseCase"
+
 class CategorizeTransactionsUseCase {
 
     fun execute(transactions: List<Transaction>, categories: List<Category>): CategorizationData {
+        Logger.d(TAG) { "execute: ${transactions.size} ${categories.size}" }
         val uncategorizedTransactions = mutableListOf<Transaction>()
         val categoriesMap = mutableMapOf<Category, MutableList<Transaction>>()
 

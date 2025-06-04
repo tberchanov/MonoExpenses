@@ -16,12 +16,23 @@ class MoveTransactionToCategoryUseCase {
             .toMutableList()
             .apply { remove(transactionToMove) }
 
-        val categorizedTransactions = categorizationData.categorizedTransactions.first {
+        val categorizedTransactions = categorizationData.categorizedTransactions.firstOrNull() {
             it.category == category
         }
+
         val categorizedTransactionsList = categorizationData.categorizedTransactions.toMutableList()
-        categorizedTransactionsList.remove(categorizedTransactions)
-        categorizedTransactionsList.add(categorizedTransactions.addTransaction(transactionToMove))
+        if (categorizedTransactions == null) {
+            categorizedTransactionsList.add(
+                CategorizedTransactions(
+                    category,
+                    listOf(transactionToMove),
+                    transactionToMove.amount,
+                )
+            )
+        } else {
+            categorizedTransactionsList.remove(categorizedTransactions)
+            categorizedTransactionsList.add(categorizedTransactions.addTransaction(transactionToMove))
+        }
 
         return categorizationData.copy(
             categorizedTransactions = categorizedTransactionsList,

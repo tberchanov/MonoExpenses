@@ -1,5 +1,6 @@
 package com.monoexpenses.data
 
+import co.touchlab.kermit.Logger
 import com.monoexpenses.data.dto.TransactionDto
 import com.monoexpenses.data.network.httpClient
 import com.monoexpenses.domain.model.Transaction
@@ -23,11 +24,16 @@ internal class TransactionsRepositoryMonoImpl : TransactionsRepository {
         fromMillis: Long,
         toMillis: Long,
     ): List<Transaction> {
-        val response = httpClient.get("$BASE_URL/personal/statement/$accountId/$fromMillis/$toMillis") {
-            headers {
-                append("X-Token", token)
-            }
+        Logger.d("TransactionsRepository") {
+            "getStatement $token $accountId $fromMillis $toMillis"
         }
+
+        val response =
+            httpClient.get("$BASE_URL/personal/statement/$accountId/$fromMillis/$toMillis") {
+                headers {
+                    append("X-Token", token)
+                }
+            }
 
         if (response.status.isSuccess()) {
             val transactionsDto: List<TransactionDto> = response.body()

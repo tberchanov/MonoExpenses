@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.monoexpenses.domain.model.CategorizedTransactions
 import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatMoney
-import monoexpenses.composeapp.generated.resources.Res
-import monoexpenses.composeapp.generated.resources.folder_icon
+import expensesanalyzer.composeapp.generated.resources.Res
+import expensesanalyzer.composeapp.generated.resources.folder_icon
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

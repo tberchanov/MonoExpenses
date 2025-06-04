@@ -3,7 +3,6 @@ package com.monoexpenses.presentation.home.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,13 +27,14 @@ import com.monoexpenses.presentation.add.accounts.ui.AddAccountsDialog
 import com.monoexpenses.presentation.home.HomeViewModel
 import com.monoexpenses.presentation.home.ui.calendar.CalendarDialog
 import com.monoexpenses.presentation.ui.theme.AppColors
-import com.monoexpenses.utils.formatMoney
 import org.koin.compose.viewmodel.koinViewModel
 
-private val CONTENT_PADDING = 14.dp
+val HOME_CONTENT_PADDING = 14.dp
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onCategoriesSettingsClicked: () -> Unit,
+) {
     val viewModel = koinViewModel<HomeViewModel>()
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
@@ -45,7 +45,7 @@ fun HomeScreen() {
             .background(Color(0xFFF4F9F9)),
     ) {
         Header(
-            padding = CONTENT_PADDING,
+            padding = HOME_CONTENT_PADDING,
             onLoadClick = {
                 viewModel.onLoadClick()
             },
@@ -57,13 +57,25 @@ fun HomeScreen() {
 
         state.apply {
             if (categorizationData != null) {
+                var moveTransactionToCategory: Transaction? by remember { mutableStateOf(null) }
                 HomeData(
                     categorizationData,
                     categories,
-                    onMoveTransactionToCategory = { transaction, category ->
-                        viewModel.moveTransactionToCategory(transaction, category)
-                    }
+                    onMoveToCategoryClicked = { transaction ->
+                        moveTransactionToCategory = transaction
+                    },
+                    onCategoriesSettingsClicked = onCategoriesSettingsClicked,
                 )
+                moveTransactionToCategory?.let { transaction ->
+                    MoveTransactionToCategoryDialog(
+                        transaction = transaction,
+                        categories = categories,
+                        onDismiss = { moveTransactionToCategory = null },
+                        onMove = { category ->
+                            viewModel.moveTransactionToCategory(transaction, category)
+                        }
+                    )
+                }
             }
             if (loading != null) {
                 HomeLoading(loading)
@@ -98,42 +110,12 @@ fun HomeScreen() {
 }
 
 @Composable
-fun HomeData(
+expect fun HomeData(
     categorizationData: CategorizationData,
     categories: List<Category>,
-    onMoveTransactionToCategory: (Transaction, Category) -> Unit,
-) {
-    var moveTransactionToCategory: Transaction? by remember { mutableStateOf(null) }
-    Row {
-        UncategorizedExpenses(
-            modifier = Modifier.weight(1f)
-                .padding(CONTENT_PADDING),
-            total = remember(categorizationData.uncategorizedTotalExpenses) {
-                formatMoney(
-                    categorizationData.uncategorizedTotalExpenses
-                )
-            },
-            transactions = categorizationData.uncategorizedTransactions,
-            onMoveToCategoryClicked = { transaction ->
-                moveTransactionToCategory = transaction
-            }
-        )
-        Categories(
-            modifier = Modifier.weight(1f).padding(CONTENT_PADDING),
-            categorizedTransactions = categorizationData.categorizedTransactions,
-        )
-    }
-    moveTransactionToCategory?.let { transaction ->
-        MoveTransactionToCategoryDialog(
-            transaction = transaction,
-            categories = categories,
-            onDismiss = { moveTransactionToCategory = null },
-            onMove = { category ->
-                onMoveTransactionToCategory(transaction, category)
-            }
-        )
-    }
-}
+    onMoveToCategoryClicked: (Transaction) -> Unit,
+    onCategoriesSettingsClicked: () -> Unit,
+)
 
 @Composable
 fun HomeLoading(showLoader: Boolean) {
@@ -143,7 +125,7 @@ fun HomeLoading(showLoader: Boolean) {
             contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.padding(CONTENT_PADDING),
+                modifier = Modifier.padding(HOME_CONTENT_PADDING),
                 color = AppColors.Primary,
             )
         }

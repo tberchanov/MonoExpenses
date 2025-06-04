@@ -1,4 +1,4 @@
-rootProject.name = "MonoExpenses"
+rootProject.name = "ExpensesAnalyzer"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

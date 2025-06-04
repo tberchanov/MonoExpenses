@@ -1,6 +1,7 @@
 package com.monoexpenses.di
 
 import com.monoexpenses.presentation.add.accounts.AddAccountsViewModel
+import com.monoexpenses.presentation.categories.configuration.CategoriesConfigurationViewModel
 import com.monoexpenses.presentation.home.HomeViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModelOf
@@ -20,4 +21,5 @@ fun initKoin(config: KoinAppDeclaration? = null) {
 val appModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::AddAccountsViewModel)
+    viewModelOf(::CategoriesConfigurationViewModel)
 }

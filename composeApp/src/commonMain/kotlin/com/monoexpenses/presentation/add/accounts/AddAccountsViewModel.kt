@@ -25,6 +25,7 @@ data class AddAccountsState(
     val saveUserAccountsButtonEnabled: Boolean = false,
     val selectableBankAccounts: List<SelectableBankAccount>? = null,
     val errorMessage: String? = null,
+    val isAccountSaved: Boolean = false,
 )
 
 class AddAccountsViewModel(
@@ -85,6 +86,7 @@ class AddAccountsViewModel(
     }
 
     fun saveUserBankAccounts() {
+        Logger.d(TAG) { "saveUserBankAccounts ${stateFlow.value.selectableBankAccounts?.size}" }
         viewModelScope.launch(coroutineContext) {
             with(stateFlow.value) {
                 if (!selectableBankAccounts.isNullOrEmpty()) {
@@ -95,6 +97,12 @@ class AddAccountsViewModel(
                     )
                 }
             }
+            emitNewState { copy(isAccountSaved = true) }
         }
+    }
+
+    override fun onCleared() {
+        Logger.d(TAG) { "onCleared" }
+        super.onCleared()
     }
 }

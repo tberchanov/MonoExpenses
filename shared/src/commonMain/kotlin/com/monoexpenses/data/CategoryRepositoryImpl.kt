@@ -1,11 +1,16 @@
 package com.monoexpenses.data
 
+import co.touchlab.kermit.Logger
 import com.monoexpenses.domain.model.Category
 import com.monoexpenses.domain.model.CategoryFilter
 import com.monoexpenses.domain.repository.CategoryRepository
 
+private const val TAG = "CategoryRepository"
+
 internal class CategoryRepositoryImpl : CategoryRepository {
     override fun getCategories(): List<Category> {
+        Logger.d(TAG) { "getCategories" }
+
         return listOf(
             Category(
                 id = "1",

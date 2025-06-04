@@ -82,8 +82,10 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.compose.multiplatform.calendar)
             implementation(compose.material3)
+            implementation(libs.androidx.navigation.compose)
         }
         desktopMain.dependencies {
+            implementation(compose.ui)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
@@ -109,7 +111,7 @@ android {
         applicationId = "com.monoexpenses"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0"
     }
     packaging {

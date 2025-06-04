@@ -53,8 +53,8 @@ import com.monoexpenses.presentation.ui.clickable
 import com.monoexpenses.utils.displayText
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import monoexpenses.composeapp.generated.resources.Res
-import monoexpenses.composeapp.generated.resources.cross
+import expensesanalyzer.composeapp.generated.resources.Res
+import expensesanalyzer.composeapp.generated.resources.cross
 import org.jetbrains.compose.resources.painterResource
 
 private val primaryColor = Color.Black.copy(alpha = 0.9f)

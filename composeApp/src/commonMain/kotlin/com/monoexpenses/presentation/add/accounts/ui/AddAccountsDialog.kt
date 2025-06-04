@@ -36,6 +36,11 @@ fun AddAccountsDialog(
     val viewModel = koinViewModel<AddAccountsViewModel>()
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
+    if (state.isAccountSaved) {
+        onDismiss()
+        viewModel.resetState()
+    }
+
     Dialog(
         onDismissRequest = {
             onDismiss()
@@ -104,8 +109,6 @@ fun AddAccountsDialog(
                         Button(
                             onClick = {
                                 viewModel.saveUserBankAccounts()
-                                onDismiss()
-                                viewModel.resetState()
                             },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = state.saveUserAccountsButtonEnabled,

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
-private const val TAG = "AppViewModel"
+private const val TAG = "HomeViewModel"
 
 data class HomeState(
     val categorizationData: CategorizationData? = null,
