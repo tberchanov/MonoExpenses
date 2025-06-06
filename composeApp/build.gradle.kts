@@ -138,17 +138,17 @@ compose.desktop {
     application {
         mainClass = "com.monoexpenses.MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "com.monoexpenses"
             packageVersion = "1.0.0"
             macOS {
-                iconFile.set(project.file("icon.icns"))
+                iconFile.set(project.file("resources/icon.icns"))
             }
             windows {
-                iconFile.set(project.file("icon.ico"))
+                iconFile.set(project.file("resources/icon.ico"))
             }
             linux {
-                iconFile.set(project.file("icon.png"))
+                iconFile.set(project.file("resources/icon.png"))
             }
         }
     }

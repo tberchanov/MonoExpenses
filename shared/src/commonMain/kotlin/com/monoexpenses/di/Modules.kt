@@ -1,9 +1,10 @@
 package com.monoexpenses.di
 
-import com.monoexpenses.data.CategoryRepositoryImpl
 import com.monoexpenses.data.TransactionsRepositoryMonoImpl
 import com.monoexpenses.data.accounts.BankAccountsNetworkDataSource
 import com.monoexpenses.data.accounts.BankAccountsRepositoryImpl
+import com.monoexpenses.data.category.CategoryRepositoryImpl
+import com.monoexpenses.data.category.DefaultCategoriesDataSource
 import com.monoexpenses.data.user.UserDataRepositoryImpl
 import com.monoexpenses.domain.repository.BankAccountsRepository
 import com.monoexpenses.domain.repository.CategoryRepository
@@ -31,6 +32,7 @@ internal val useCaseModule = module {
 internal val repositoryModule = module {
     singleOf(::TransactionsRepositoryMonoImpl).bind<TransactionsRepository>()
     singleOf(::BankAccountsRepositoryImpl).bind<BankAccountsRepository>()
+    singleOf(::DefaultCategoriesDataSource)
     singleOf(::CategoryRepositoryImpl).bind<CategoryRepository>()
     singleOf(::UserDataRepositoryImpl).bind<UserDataRepository>()
     singleOf(::BankAccountsNetworkDataSource)

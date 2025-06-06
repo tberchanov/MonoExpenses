@@ -12,9 +12,9 @@ import com.monoexpenses.presentation.ui.theme.AppColors
 val DIVIDER_SIZE = 0.7.dp
 
 @Composable
-fun Divider() {
+fun Divider(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .height(DIVIDER_SIZE)
             .background(AppColors.DividerColor),
     )

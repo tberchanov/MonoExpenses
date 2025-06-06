@@ -1,14 +1,13 @@
-package com.monoexpenses.data
+package com.monoexpenses.data.category
 
 import co.touchlab.kermit.Logger
 import com.monoexpenses.domain.model.Category
 import com.monoexpenses.domain.model.CategoryFilter
-import com.monoexpenses.domain.repository.CategoryRepository
 
-private const val TAG = "CategoryRepository"
+private const val TAG = "DefaultCategoriesDataSource"
 
-internal class CategoryRepositoryImpl : CategoryRepository {
-    override fun getCategories(): List<Category> {
+internal class DefaultCategoriesDataSource {
+    fun getDefaultCategories(): List<Category> {
         Logger.d(TAG) { "getCategories" }
 
         return listOf(
@@ -21,9 +20,6 @@ internal class CategoryRepositoryImpl : CategoryRepository {
                     CategoryFilter(transactionMcc = 5812),
                     CategoryFilter(transactionMcc = 5411),
                     CategoryFilter(transactionMcc = 5462),
-                    CategoryFilter(transactionDescription = "Сільпо"),
-                    CategoryFilter(transactionDescription = "TOV Parkovyy Keiteryng"),
-                    CategoryFilter(transactionDescription = "TOV PARKOVYY KEiTERYNG"),
                 )
             ),
             Category(
@@ -52,19 +48,12 @@ internal class CategoryRepositoryImpl : CategoryRepository {
                         transactionDescription = "Patreon",
                         transactionAmount = -5020,
                     ),
-                    CategoryFilter(
-                        transactionDescription = "УТ-2",
-                    ),
-                    CategoryFilter(
-                        transactionDescription = "YouTube",
-                    ),
                 )
             ),
             Category(
                 id = "4",
                 name = "Health and Beauty",
                 categoryFilters = listOf(
-                    CategoryFilter(transactionDescription = "Оксана Парикмахер"),
                     CategoryFilter(transactionMcc = 5912),
                 )
             ),
@@ -72,15 +61,7 @@ internal class CategoryRepositoryImpl : CategoryRepository {
                 id = "5",
                 name = "Other",
                 categoryFilters = listOf(
-                    CategoryFilter(transactionDescription = "З білої картки"),
-                    CategoryFilter(transactionDescription = "Моя Прелесть"),
-                    CategoryFilter(transactionDescription = "З гривневого рахунку ФОП"),
-                    CategoryFilter(transactionDescription = "Мій Приват (універсальна)"),
-                    CategoryFilter(transactionDescription = "Зарплата"),
-                    CategoryFilter(transactionDescription = "З чорної картки"),
-                    CategoryFilter(transactionDescription = "Від: Олександр Берчанов"),
-                    CategoryFilter(transactionDescription = "Переказ на картку"),
-                    CategoryFilter(transactionDescription = "Виведення кешбеку "),
+
                 )
             ),
             Category(
@@ -88,7 +69,6 @@ internal class CategoryRepositoryImpl : CategoryRepository {
                 name = "Leisure",
                 categoryFilters = listOf(
                     CategoryFilter(transactionMcc = 5942),
-                    CategoryFilter(transactionDescription = "MOODSHOPHarkiv"),
                 )
             ),
             Category(

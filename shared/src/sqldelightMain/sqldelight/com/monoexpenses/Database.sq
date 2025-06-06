@@ -29,3 +29,38 @@ DELETE FROM Account WHERE userId = ?;
 
 getAccounts:
 SELECT accountId, userId, name, currency FROM Account WHERE userId = ?;
+
+CREATE TABLE IF NOT EXISTS Category (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+insertCategory:
+INSERT INTO Category (id, name) VALUES (?, ?);
+
+deleteCategory:
+DELETE FROM Category WHERE id = ?;
+
+getAllCategories:
+SELECT id, name FROM Category;
+
+CREATE TABLE IF NOT EXISTS CategoryFilter (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    categoryId TEXT NOT NULL,
+    transactionMcc INTEGER,
+    transactionDescription TEXT,
+    transactionAmount INTEGER,
+    FOREIGN KEY (categoryId) REFERENCES Category(id) ON DELETE CASCADE
+);
+
+insertCategoryFilter:
+INSERT INTO CategoryFilter (categoryId, transactionMcc, transactionDescription, transactionAmount) 
+VALUES (?, ?, ?, ?);
+
+deleteCategoryFilter:
+DELETE FROM CategoryFilter WHERE id = ?;
+
+getCategoryFilters:
+SELECT id, categoryId, transactionMcc, transactionDescription, transactionAmount 
+FROM CategoryFilter 
+WHERE categoryId = ?;

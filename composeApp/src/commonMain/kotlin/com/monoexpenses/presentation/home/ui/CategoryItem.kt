@@ -11,11 +11,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.monoexpenses.domain.model.CategorizedTransactions
 import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatMoney
 import expensesanalyzer.composeapp.generated.resources.Res
@@ -24,8 +24,9 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CategoryItem(
-    categorizedTransactions: CategorizedTransactions,
-    isExpanded: Boolean
+    categoryName: String,
+    totalExpenses: Long? = null,
+    isExpanded: Boolean = false
 ) {
     val rotationDegree by animateFloatAsState(
         targetValue = if (isExpanded) 90f else 0f,
@@ -35,25 +36,26 @@ fun CategoryItem(
 
     Column {
         Divider()
-        Row(Modifier.padding(4.dp)) {
-            Row {
-                Icon(
-                    painterResource(Res.drawable.folder_icon),
-                    null,
-                    tint = AppColors.Primary,
-                    modifier = Modifier.padding(end = 8.dp)
-                        .graphicsLayer {
-                            rotationZ = rotationDegree
-                        }
-                )
+
+        Row(Modifier.padding(4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painterResource(Res.drawable.folder_icon),
+                null,
+                tint = AppColors.Primary,
+                modifier = Modifier.padding(end = 8.dp)
+                    .graphicsLayer {
+                        rotationZ = rotationDegree
+                    }
+            )
+            Text(
+                categoryName,
+                modifier = Modifier.padding(end = 8.dp),
+            )
+            if (totalExpenses != null) {
                 Text(
-                    categorizedTransactions.category.name,
-                    modifier = Modifier.padding(end = 8.dp),
-                )
-                Text(
-                    remember(categorizedTransactions.totalExpenses) {
+                    remember(totalExpenses) {
                         formatMoney(
-                            categorizedTransactions.totalExpenses
+                            totalExpenses
                         )
                     },
                     Modifier.fillMaxWidth(),

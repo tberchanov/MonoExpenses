@@ -66,7 +66,13 @@ fun Categories(
                     it.category.id,
                 )
             },
-            collapsedItemContent = { CategoryItem(it.data, it.isExpanded) },
+            collapsedItemContent = {
+                CategoryItem(
+                    categoryName = it.data.category.name,
+                    totalExpenses = it.data.totalExpenses,
+                    isExpanded = it.isExpanded,
+                )
+            },
             expandedItemContent = { CategoryTransactions(it.data) },
         )
     }

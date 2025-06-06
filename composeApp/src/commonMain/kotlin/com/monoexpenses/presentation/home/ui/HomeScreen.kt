@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +23,7 @@ import com.monoexpenses.domain.model.Transaction
 import com.monoexpenses.presentation.add.accounts.ui.AddAccountsDialog
 import com.monoexpenses.presentation.home.HomeViewModel
 import com.monoexpenses.presentation.home.ui.calendar.CalendarDialog
+import com.monoexpenses.presentation.ui.ErrorDialog
 import com.monoexpenses.presentation.ui.theme.AppColors
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -81,7 +79,7 @@ fun HomeScreen(
                 HomeLoading(loading)
             }
             if (errorMessage != null) {
-                HomeError(
+                ErrorDialog(
                     errorMessage,
                     onDismiss = {
                         viewModel.resetError()
@@ -130,20 +128,4 @@ fun HomeLoading(showLoader: Boolean) {
             )
         }
     }
-}
-
-@Composable
-fun HomeError(errorMessage: String, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text("Error") },
-        text = { Text(errorMessage) },
-        confirmButton = {
-            TextButton(
-                onClick = { onDismiss() }
-            ) {
-                Text("OK")
-            }
-        }
-    )
 }

@@ -76,7 +76,9 @@ kotlin {
         }
 
         nativeMain.dependencies {
+            implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native)
+            implementation(libs.multiplatform.settings)
         }
 
         wasmJsMain.dependencies {
@@ -99,7 +101,6 @@ kotlin {
             }
         }
         androidMain.get().dependsOn(sqldelightMain)
-        iosMain.get().dependsOn(sqldelightMain)
         jvmMain.get().dependsOn(sqldelightMain)
         nativeMain.get().dependsOn(sqldelightMain)
     }
@@ -118,6 +119,7 @@ android {
 }
 
 sqldelight {
+    linkSqlite = true
     databases {
         create("Database") {
             packageName.set("com.monoexpenses")

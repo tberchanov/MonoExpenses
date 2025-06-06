@@ -2,6 +2,8 @@ package com.monoexpenses.di
 
 import com.monoexpenses.data.accounts.BankAccountsLocalDataSource
 import com.monoexpenses.data.accounts.BankAccountsLocalDataSourceImpl
+import com.monoexpenses.data.category.CategoriesLocalDataSource
+import com.monoexpenses.data.category.CategoriesLocalDataSourceImpl
 import com.monoexpenses.data.user.LocalUserDataSource
 import com.monoexpenses.data.user.LocalUserDataSourceImpl
 import com.monoexpenses.data.user.SecureUserDataSource
@@ -14,4 +16,5 @@ internal actual fun getPlatformModule() = module {
     singleOf(::LocalUserDataSourceImpl).bind<LocalUserDataSource>()
     singleOf(::BankAccountsLocalDataSourceImpl).bind<BankAccountsLocalDataSource>()
     singleOf(::SecureUserDataSourceImpl).bind<SecureUserDataSource>()
+    singleOf(::CategoriesLocalDataSourceImpl).bind<CategoriesLocalDataSource>()
 }

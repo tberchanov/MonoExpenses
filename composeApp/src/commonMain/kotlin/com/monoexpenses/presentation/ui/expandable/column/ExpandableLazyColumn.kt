@@ -26,6 +26,7 @@ fun <T> ExpandableLazyColumn(
     modifier: Modifier = Modifier,
     collapsedItemContent: @Composable (ExpandableItem<T>) -> Unit,
     expandedItemContent: @Composable (ExpandableItem<T>) -> Unit,
+    onItemExpanded: (String, Boolean) -> Unit = { _, _ -> }
 ) {
     var state by mutableStateOf(expandableItems)
 
@@ -43,6 +44,7 @@ fun <T> ExpandableLazyColumn(
                         .apply {
                             set(index, newItem)
                         }
+                    onItemExpanded(item.id, newItem.isExpanded)
                 }) {
                     collapsedItemContent(item)
                 }
