@@ -141,6 +141,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "com.monoexpenses"
             packageVersion = "1.0.0"
+            modules("java.sql")
             macOS {
                 iconFile.set(project.file("resources/icon.icns"))
             }

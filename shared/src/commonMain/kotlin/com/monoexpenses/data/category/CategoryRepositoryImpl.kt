@@ -24,7 +24,7 @@ internal class CategoryRepositoryImpl(
             return defaultCategories.sortedBy { it.name }
         }
         
-        return categories.sortedBy { it.name }
+        return categories.sortedBy { it.name.lowercase() }
     }
 
     override suspend fun saveCategory(category: Category) {

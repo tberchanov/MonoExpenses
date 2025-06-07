@@ -15,7 +15,7 @@ import org.koin.dsl.module
 internal actual fun getPlatformModule(): Module = module {
     single {
         DBProvider {
-            val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+            val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:database.db")
             Database.Schema.create(driver).await()
             Database(driver)
         }

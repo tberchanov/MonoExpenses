@@ -48,12 +48,16 @@ class CategoriesConfigurationViewModel(
 
     fun loadData() {
         viewModelScope.launch(coroutineContext) {
-            emitNewState {
-                copy(
-                    errorMessage = null,
-                    categories = categoryRepository.getCategories(),
-                )
-            }
+            loadDataInternal()
+        }
+    }
+
+    private suspend fun loadDataInternal() {
+        emitNewState {
+            copy(
+                errorMessage = null,
+                categories = categoryRepository.getCategories(),
+            )
         }
     }
 
@@ -85,14 +89,14 @@ class CategoriesConfigurationViewModel(
     fun deleteCategory(category: Category) {
         viewModelScope.launch(coroutineContext) {
             categoryRepository.deleteCategory(category.id)
-            loadData()
+            loadDataInternal()
         }
     }
 
     fun deleteCategoryFilter(category: Category, filter: CategoryFilter) {
         viewModelScope.launch(coroutineContext) {
             categoryRepository.deleteCategoryFilter(category.id, filter)
-            loadData() // Reload categories after deleting filter
+            loadDataInternal() // Reload categories after deleting filter
         }
     }
 
@@ -106,7 +110,7 @@ class CategoriesConfigurationViewModel(
                     categoryFilters = emptyList()
                 )
                 categoryRepository.saveCategory(newCategory)
-                loadData() // Reload categories after adding new one
+                loadDataInternal() // Reload categories after adding new one
             }
             dismissAddCategoryDialog()
         }
@@ -143,7 +147,7 @@ class CategoriesConfigurationViewModel(
             Logger.d(TAG) { "addCategoryFilter: $categoryFilter $currentCategory" }
             if (currentCategory != null) {
                 categoryRepository.saveCategoryFilter(currentCategory.id, categoryFilter)
-                loadData()
+                loadDataInternal()
             }
             dismissAddCategoryFilterDialog()
         }

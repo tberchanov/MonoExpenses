@@ -23,7 +23,7 @@ import kotlinx.datetime.LocalTime
 private const val TAG = "HomeViewModel"
 
 data class HomeState(
-    val categorizationData: CategorizationData? = null,
+    val categorizationData: CategorizationData = CategorizationData(emptyList(), emptyList(), 0),
     val errorMessage: String? = null,
     val loading: Boolean? = null,
     val showAddBankAccount: Boolean = false,
@@ -108,12 +108,10 @@ class HomeViewModel(
 
     fun moveTransactionToCategory(transaction: Transaction, category: Category) {
         val categorizationData = stateFlow.value.categorizationData
-        if (categorizationData != null) {
-            val modifiedCategorizationData = moveTransactionToCategoryUseCase.execute(
-                categorizationData, transaction, category,
-            )
-            emitNewState { copy(categorizationData = modifiedCategorizationData) }
-        }
+        val modifiedCategorizationData = moveTransactionToCategoryUseCase.execute(
+            categorizationData, transaction, category,
+        )
+        emitNewState { copy(categorizationData = modifiedCategorizationData) }
     }
 
     private inline fun emitNewState(block: HomeState.() -> HomeState) {
