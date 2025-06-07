@@ -54,6 +54,9 @@ fun HomeScreen(
         )
 
         state.apply {
+            if (loading != null) {
+                HomeLoading(loading)
+            }
             if (categorizationData != null) {
                 var moveTransactionToCategory: Transaction? by remember { mutableStateOf(null) }
                 HomeData(
@@ -74,9 +77,6 @@ fun HomeScreen(
                         }
                     )
                 }
-            }
-            if (loading != null) {
-                HomeLoading(loading)
             }
             if (errorMessage != null) {
                 ErrorDialog(

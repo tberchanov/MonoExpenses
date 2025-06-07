@@ -71,7 +71,14 @@ class CategorizeTransactionsUseCase {
             val mccMatching = filter.transactionMcc?.equals(transaction.mcc) ?: true
             val amountMatching = filter.transactionAmount?.equals(transaction.amount) ?: true
             val descriptionMatching =
-                filter.transactionDescription?.let { transaction.description.contains(it) } ?: true
+                filter.transactionDescription?.let { 
+                    try {
+                        Regex(it).containsMatchIn(transaction.description)
+                    } catch (e: Exception) {
+                        Logger.e(TAG) { "Invalid regex pattern: $it" }
+                        transaction.description.contains(it)
+                    }
+                } ?: true
             mccMatching && amountMatching && descriptionMatching
         }
     }
