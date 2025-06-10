@@ -16,13 +16,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.monoexpenses.presentation.accounts.configuration.ui.AccountsConfigurationScreen
 import com.monoexpenses.presentation.categories.configuration.ui.CategoriesConfigurationScreen
 import com.monoexpenses.presentation.home.ui.HomeScreen
 import com.monoexpenses.presentation.ui.theme.MonoExpensesTheme
 
+private const val CATEGORIES_MODIFIED_KEY = "CATEGORIES_MODIFIED_KEY"
+
 enum class Screen {
     Home,
     CategoriesConfiguration(),
+    AccountsConfiguration(),
 }
 
 val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> {
@@ -47,13 +51,33 @@ fun AppUI(
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    composable(route = Screen.Home.name) {
-                        HomeScreen(onCategoriesSettingsClicked = {
-                            navController.navigate(Screen.CategoriesConfiguration.name)
-                        })
+                    composable(route = Screen.Home.name) { entry ->
+                        val isCategoriesModified =
+                            entry.savedStateHandle.get<Boolean>(CATEGORIES_MODIFIED_KEY) ?: false
+                        if (isCategoriesModified) {
+                            entry.savedStateHandle[CATEGORIES_MODIFIED_KEY] = false
+                        }
+                        HomeScreen(
+                            isCategoriesModified = isCategoriesModified,
+                            onCategoriesSettingsClicked = {
+                                navController.navigate(Screen.CategoriesConfiguration.name)
+                            },
+                        )
                     }
                     composable(route = Screen.CategoriesConfiguration.name) {
-                        CategoriesConfigurationScreen(onBackClicked = {
+                        CategoriesConfigurationScreen(
+                            onBackClicked = {
+                                navController.popBackStack()
+                            },
+                            onCategoriesModified = {
+                                navController.previousBackStackEntry
+                                    ?.savedStateHandle
+                                    ?.set(CATEGORIES_MODIFIED_KEY, true)
+                            },
+                        )
+                    }
+                    composable(route = Screen.AccountsConfiguration.name) {
+                        AccountsConfigurationScreen(onBackClicked = {
                             navController.popBackStack()
                         })
                     }

@@ -39,7 +39,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CategoriesConfigurationScreen(
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onCategoriesModified: () -> Unit,
 ) {
     val viewModel = koinViewModel<CategoriesConfigurationViewModel>()
 
@@ -57,6 +58,11 @@ fun CategoriesConfigurationScreen(
 
         val state by viewModel.stateFlow.collectAsStateWithLifecycle()
         state.apply {
+            if (categoriesModified) {
+                remember(categoriesModified) {
+                    onCategoriesModified()
+                }
+            }
             if (errorMessage != null) {
                 ErrorDialog(
                     errorMessage,

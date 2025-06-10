@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatEpochSecondsToDayMonth
 import com.monoexpenses.utils.formatMoney
 
@@ -22,7 +25,10 @@ import com.monoexpenses.utils.formatMoney
 fun TransactionItem(
     transaction: Transaction,
     showContextMenu: Boolean = false,
+    showCheckBox: Boolean = false,
+    isChecked: Boolean = false,
     onMoveToCategoryClicked: () -> Unit = {},
+    onSelectClicked: (Boolean) -> Unit = {},
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var showDropDown by remember { mutableStateOf(false) }
@@ -39,6 +45,17 @@ fun TransactionItem(
     ) {
         Divider()
         Row(Modifier.padding(4.dp)) {
+            if (showCheckBox) {
+                Checkbox(
+                    checked = isChecked,
+                    onCheckedChange = {
+                        onSelectClicked(it)
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = AppColors.Primary
+                    )
+                )
+            }
             Text(formatEpochSecondsToDayMonth(transaction.time), modifier = Modifier.weight(1f))
             Text(
                 remember(transaction.amount) { formatMoney(transaction.amount) },
@@ -59,6 +76,15 @@ fun TransactionItem(
                         onMoveToCategoryClicked()
                     },
                 )
+                if (!showCheckBox) {
+                    DropdownMenuItem(
+                        text = { Text("Select") },
+                        onClick = {
+                            showDropDown = false
+                            onSelectClicked(true)
+                        },
+                    )
+                }
             }
         }
     }

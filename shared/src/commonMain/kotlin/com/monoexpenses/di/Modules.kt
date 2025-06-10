@@ -14,6 +14,7 @@ import com.monoexpenses.domain.usecase.CategorizeTransactionsUseCase
 import com.monoexpenses.domain.usecase.GetAllAccountsUseCase
 import com.monoexpenses.domain.usecase.GetTransactionsUseCase
 import com.monoexpenses.domain.usecase.MoveTransactionToCategoryUseCase
+import com.monoexpenses.domain.usecase.MoveTransactionsToCategoryUseCase
 import com.monoexpenses.domain.usecase.SaveSelectedAccountsUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -27,6 +28,7 @@ internal val useCaseModule = module {
     factoryOf(::GetAllAccountsUseCase)
     factoryOf(::SaveSelectedAccountsUseCase)
     factoryOf(::MoveTransactionToCategoryUseCase)
+    factoryOf(::MoveTransactionsToCategoryUseCase)
 }
 
 internal val repositoryModule = module {

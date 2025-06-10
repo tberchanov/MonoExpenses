@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,9 +32,15 @@ val HOME_CONTENT_PADDING = 14.dp
 
 @Composable
 fun HomeScreen(
+    isCategoriesModified: Boolean = false,
     onCategoriesSettingsClicked: () -> Unit,
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
+    if (isCategoriesModified) {
+        LaunchedEffect(isCategoriesModified) {
+            viewModel.recategorizeTransactions()
+        }
+    }
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     Column(
@@ -61,11 +68,18 @@ fun HomeScreen(
                 var moveTransactionToCategory: Transaction? by remember { mutableStateOf(null) }
                 HomeData(
                     categorizationData,
+                    selectedTransactions,
                     categories,
                     onMoveToCategoryClicked = { transaction ->
                         moveTransactionToCategory = transaction
                     },
                     onCategoriesSettingsClicked = onCategoriesSettingsClicked,
+                    onSelectTransactionClicked = { transaction, isSelected ->
+                        viewModel.selectTransaction(transaction, isSelected)
+                    },
+                    onCloseSelection = {
+                        viewModel.closeSelection()
+                    }
                 )
                 moveTransactionToCategory?.let { transaction ->
                     MoveTransactionToCategoryDialog(
@@ -110,9 +124,12 @@ fun HomeScreen(
 @Composable
 expect fun HomeData(
     categorizationData: CategorizationData,
+    selectedTransactions: Set<Transaction>,
     categories: List<Category>,
     onMoveToCategoryClicked: (Transaction) -> Unit,
     onCategoriesSettingsClicked: () -> Unit,
+    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    onCloseSelection: () -> Unit = {},
 )
 
 @Composable

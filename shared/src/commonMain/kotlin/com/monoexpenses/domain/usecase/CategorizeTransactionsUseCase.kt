@@ -27,13 +27,15 @@ class CategorizeTransactionsUseCase {
             }
         }
 
+        uncategorizedTransactions.sortBy { it.time }
+
         val categorizedTransactions = categoriesMap.map { (category, transactions) ->
             CategorizedTransactions(
                 category,
                 transactions,
                 totalExpenses = calcTotalExpenses(transactions)
             )
-        }
+        }.sortedBy { it.category.name.lowercase() }
 
         return CategorizationData(
             categorizedTransactions,

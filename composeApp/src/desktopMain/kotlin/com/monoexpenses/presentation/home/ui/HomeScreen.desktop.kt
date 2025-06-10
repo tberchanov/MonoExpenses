@@ -13,9 +13,12 @@ import com.monoexpenses.utils.formatMoney
 @Composable
 actual fun HomeData(
     categorizationData: CategorizationData,
+    selectedTransactions: Set<Transaction>,
     categories: List<Category>,
     onMoveToCategoryClicked: (Transaction) -> Unit,
     onCategoriesSettingsClicked: () -> Unit,
+    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    onCloseSelection: () -> Unit,
 ) {
     Row {
         UncategorizedExpenses(
@@ -27,7 +30,10 @@ actual fun HomeData(
                 )
             },
             transactions = categorizationData.uncategorizedTransactions,
-            onMoveToCategoryClicked = onMoveToCategoryClicked
+            selectedTransactions = selectedTransactions,
+            onMoveToCategoryClicked = onMoveToCategoryClicked,
+            onSelectTransactionClicked = onSelectTransactionClicked,
+            onCloseSelection = onCloseSelection,
         )
         Categories(
             modifier = Modifier.weight(1f).padding(HOME_CONTENT_PADDING),

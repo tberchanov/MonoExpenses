@@ -20,6 +20,7 @@ data class CategoriesConfigurationState(
     val showAddCategoryDialog: Boolean = false,
     val showAddCategoryFilterDialog: Boolean = false,
     val categoryToAddFilter: Category? = null,
+    val categoriesModified: Boolean = false,
 )
 
 class CategoriesConfigurationViewModel(
@@ -89,6 +90,9 @@ class CategoriesConfigurationViewModel(
     fun deleteCategory(category: Category) {
         viewModelScope.launch(coroutineContext) {
             categoryRepository.deleteCategory(category.id)
+            emitNewState {
+                copy(categoriesModified = true)
+            }
             loadDataInternal()
         }
     }
@@ -96,7 +100,10 @@ class CategoriesConfigurationViewModel(
     fun deleteCategoryFilter(category: Category, filter: CategoryFilter) {
         viewModelScope.launch(coroutineContext) {
             categoryRepository.deleteCategoryFilter(category.id, filter)
-            loadDataInternal() // Reload categories after deleting filter
+            emitNewState {
+                copy(categoriesModified = true)
+            }
+            loadDataInternal()
         }
     }
 
@@ -110,6 +117,9 @@ class CategoriesConfigurationViewModel(
                     categoryFilters = emptyList()
                 )
                 categoryRepository.saveCategory(newCategory)
+                emitNewState {
+                    copy(categoriesModified = true)
+                }
                 loadDataInternal() // Reload categories after adding new one
             }
             dismissAddCategoryDialog()
@@ -147,6 +157,9 @@ class CategoriesConfigurationViewModel(
             Logger.d(TAG) { "addCategoryFilter: $categoryFilter $currentCategory" }
             if (currentCategory != null) {
                 categoryRepository.saveCategoryFilter(currentCategory.id, categoryFilter)
+                emitNewState {
+                    copy(categoriesModified = true)
+                }
                 loadDataInternal()
             }
             dismissAddCategoryFilterDialog()

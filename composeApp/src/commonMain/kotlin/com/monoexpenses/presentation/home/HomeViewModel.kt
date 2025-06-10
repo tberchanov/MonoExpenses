@@ -10,7 +10,7 @@ import com.monoexpenses.domain.model.Transaction
 import com.monoexpenses.domain.repository.CategoryRepository
 import com.monoexpenses.domain.usecase.CategorizeTransactionsUseCase
 import com.monoexpenses.domain.usecase.GetTransactionsUseCase
-import com.monoexpenses.domain.usecase.MoveTransactionToCategoryUseCase
+import com.monoexpenses.domain.usecase.MoveTransactionsToCategoryUseCase
 import com.monoexpenses.utils.getDisplayName
 import com.monoexpenses.utils.toEpochSeconds
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,13 +30,15 @@ data class HomeState(
     val showCalendarDialog: Boolean = false,
     val selectedDateMessage: String = "",
     val categories: List<Category> = emptyList(),
+    val selectedTransactions: Set<Transaction> = emptySet(),
+    val allLoadedTransactions: List<Transaction> = emptyList(),
 )
 
 class HomeViewModel(
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val categorizeTransactionsUseCase: CategorizeTransactionsUseCase,
     private val categoryRepository: CategoryRepository,
-    private val moveTransactionToCategoryUseCase: MoveTransactionToCategoryUseCase,
+    private val moveTransactionsToCategoryUseCase: MoveTransactionsToCategoryUseCase,
 ) : ViewModel() {
 
     private val coroutineContext = IODispatcher.io + CoroutineExceptionHandler { _, throwable ->
@@ -80,6 +82,7 @@ class HomeViewModel(
                     showCalendarDialog = false,
                     selectedDateMessage = formatSelectedDateMessage(startDate, endDate),
                     categories = categories,
+                    allLoadedTransactions = transactions,
                 )
             }
         }
@@ -108,16 +111,61 @@ class HomeViewModel(
 
     fun moveTransactionToCategory(transaction: Transaction, category: Category) {
         val categorizationData = stateFlow.value.categorizationData
-        val modifiedCategorizationData = moveTransactionToCategoryUseCase.execute(
-            categorizationData, transaction, category,
+        val transactionsToMove = if (stateFlow.value.selectedTransactions.isEmpty()) {
+            listOf(transaction)
+        } else {
+            stateFlow.value.selectedTransactions.toList()
+        }
+        val modifiedCategorizationData = moveTransactionsToCategoryUseCase.execute(
+            categorizationData, transactionsToMove, category,
         )
-        emitNewState { copy(categorizationData = modifiedCategorizationData) }
+        emitNewState {
+            copy(
+                categorizationData = modifiedCategorizationData,
+                selectedTransactions = emptySet(),
+            )
+        }
+    }
+
+    fun selectTransaction(transaction: Transaction, isSelected: Boolean) {
+        emitNewState {
+            val newSelectedTransactions = if (isSelected) {
+                selectedTransactions.toMutableSet() + transaction
+            } else {
+                selectedTransactions.toMutableSet() - transaction
+            }
+            copy(selectedTransactions = newSelectedTransactions)
+        }
+    }
+
+    fun closeSelection() {
+        emitNewState {
+            copy(selectedTransactions = emptySet())
+        }
     }
 
     private inline fun emitNewState(block: HomeState.() -> HomeState) {
         val newState = _stateFlow.value.block()
         Logger.d(TAG) { "emitNewState: $newState" }
         _stateFlow.value = newState
+    }
+
+    fun recategorizeTransactions() {
+        Logger.d(TAG) { "recategorizeTransactions" }
+
+        viewModelScope.launch(coroutineContext) {
+            val categories = categoryRepository.getCategories()
+
+            val categorizationData = categorizeTransactionsUseCase.execute(
+                stateFlow.value.allLoadedTransactions, categories,
+            )
+            emitNewState {
+                copy(
+                    categorizationData = categorizationData,
+                    categories = categories,
+                )
+            }
+        }
     }
 }
 
