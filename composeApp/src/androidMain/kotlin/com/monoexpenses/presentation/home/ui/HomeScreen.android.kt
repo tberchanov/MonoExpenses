@@ -25,9 +25,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 actual fun HomeData(
     categorizationData: CategorizationData,
+    selectedTransactions: Set<Transaction>,
     categories: List<Category>,
     onMoveToCategoryClicked: (Transaction) -> Unit,
     onCategoriesSettingsClicked: () -> Unit,
+    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    onCloseSelection: () -> Unit,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Uncategorized", "Categories")
@@ -69,6 +72,9 @@ actual fun HomeData(
                 total = categorizationData.uncategorizedTotalExpenses.toString(),
                 transactions = categorizationData.uncategorizedTransactions,
                 onMoveToCategoryClicked = onMoveToCategoryClicked,
+                onSelectTransactionClicked = onSelectTransactionClicked,
+                onCloseSelection = onCloseSelection,
+                selectedTransactions = selectedTransactions,
             )
 
             1 -> Categories(
@@ -85,8 +91,11 @@ actual fun HomeData(
 private fun HomeDataPreview() {
     HomeData(
         CategorizationData(emptyList(), emptyList(), 0),
+        emptySet(),
         emptyList(),
         {},
+        {},
+        { _, _ -> },
         {},
     )
 }

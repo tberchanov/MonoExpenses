@@ -52,36 +52,40 @@ class CategorizeTransactionsUseCase {
         transaction: Transaction,
         categories: List<Category>,
     ): Category? {
-        val matchedCategories = mutableListOf<Category>()
+        val matchedCategories = mutableListOf<Pair<Category, CategoryFilter>>()
         categories.forEach { category ->
-            if (isTransactionMatching(transaction, category.categoryFilters)) {
-                matchedCategories.add(category)
+            val matchedFilter = getTransactionMatchingFilter(transaction, category.categoryFilters)
+            if (matchedFilter != null) {
+                matchedCategories.add(category to matchedFilter)
             }
         }
 
         if (matchedCategories.size > 1) {
-            throw IllegalStateException("Transaction is matched for a few categories. $transaction $matchedCategories")
+            val matchedCategoriesStr =
+                matchedCategories.joinToString { "{${it.first.id} ${it.first.name}: ${it.second}}" }
+            throw IllegalStateException("Transaction is matched for a few categories. $transaction -> $matchedCategoriesStr")
         }
-        return matchedCategories.firstOrNull()
+        return matchedCategories.firstOrNull()?.first
     }
 
-    private fun isTransactionMatching(
+    private fun getTransactionMatchingFilter(
         transaction: Transaction,
         filters: List<CategoryFilter>,
-    ): Boolean {
-        return filters.any { filter ->
+    ): CategoryFilter? {
+        val matchedFilter = filters.firstOrNull { filter ->
             val mccMatching = filter.transactionMcc?.equals(transaction.mcc) ?: true
             val amountMatching = filter.transactionAmount?.equals(transaction.amount) ?: true
             val descriptionMatching =
-                filter.transactionDescription?.let { 
+                filter.transactionDescription?.let {
                     try {
-                        Regex(it).containsMatchIn(transaction.description)
+                        Regex(it).matches(transaction.description)
                     } catch (e: Exception) {
                         Logger.e(TAG) { "Invalid regex pattern: $it" }
-                        transaction.description.contains(it)
+                        transaction.description == it
                     }
                 } ?: true
             mccMatching && amountMatching && descriptionMatching
         }
+        return matchedFilter
     }
 }
