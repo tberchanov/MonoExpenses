@@ -1,7 +1,7 @@
 package com.monoexpenses.domain.usecase
 
 import co.touchlab.kermit.Logger
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.domain.model.UserData
 import com.monoexpenses.domain.repository.BankAccountsRepository
 import com.monoexpenses.domain.repository.TransactionsRepository
@@ -15,7 +15,7 @@ class GetTransactionsUseCase(
     private val userDataRepository: UserDataRepository,
 ) {
 
-    suspend fun execute(fromMillis: Long, toMillis: Long): List<Transaction> {
+    suspend fun execute(fromMillis: Long, toMillis: Long): List<TransactionFullData> {
         Logger.d(TAG) { "execute $fromMillis $toMillis" }
         return filterEqualTokens(userDataRepository.getAllUserData())
             .flatMap { userData ->
@@ -36,7 +36,7 @@ class GetTransactionsUseCase(
         userData: UserData,
         fromMillis: Long,
         toMillis: Long,
-    ): List<Transaction> {
+    ): List<TransactionFullData> {
         Logger.d(TAG) { "getAllTransactionsForUser: ${userData.token} $fromMillis $toMillis" }
         val bankAccounts = bankAccountsRepository.loadSelectedAccounts(userData.id)
         return bankAccounts.flatMap { bankAccount ->
@@ -46,7 +46,11 @@ class GetTransactionsUseCase(
                 bankAccount.id,
                 fromMillis,
                 toMillis,
-            )
+            ).map { transaction ->
+                TransactionFullData(
+                    transaction, bankAccount, userData,
+                )
+            }
         }
     }
 }

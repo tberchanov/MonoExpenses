@@ -11,4 +11,6 @@ internal data class BankAccountDto(
     val name: String,
     @SerialName("currencyCode")
     val currencyCode: Int,
+    @SerialName("maskedPan")
+    val maskedPan: List<String>
 )

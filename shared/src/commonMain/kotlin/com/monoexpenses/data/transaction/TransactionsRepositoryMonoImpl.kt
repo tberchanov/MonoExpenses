@@ -1,4 +1,4 @@
-package com.monoexpenses.data
+package com.monoexpenses.data.transaction
 
 import co.touchlab.kermit.Logger
 import com.monoexpenses.data.dto.TransactionDto

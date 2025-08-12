@@ -6,7 +6,7 @@ import co.touchlab.kermit.Logger
 import com.monoexpenses.common.IODispatcher
 import com.monoexpenses.domain.model.CategorizationData
 import com.monoexpenses.domain.model.Category
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.domain.repository.CategoryRepository
 import com.monoexpenses.domain.usecase.CategorizeTransactionsUseCase
 import com.monoexpenses.domain.usecase.GetTransactionsUseCase
@@ -26,12 +26,11 @@ data class HomeState(
     val categorizationData: CategorizationData = CategorizationData(emptyList(), emptyList(), 0),
     val errorMessage: String? = null,
     val loading: Boolean? = null,
-    val showAddBankAccount: Boolean = false,
     val showCalendarDialog: Boolean = false,
     val selectedDateMessage: String = "",
     val categories: List<Category> = emptyList(),
-    val selectedTransactions: Set<Transaction> = emptySet(),
-    val allLoadedTransactions: List<Transaction> = emptyList(),
+    val selectedTransactions: Set<TransactionFullData> = emptySet(),
+    val allLoadedTransactions: List<TransactionFullData> = emptyList(),
 )
 
 class HomeViewModel(
@@ -53,6 +52,8 @@ class HomeViewModel(
     }
     private val _stateFlow = MutableStateFlow(HomeState())
     val stateFlow = _stateFlow.asStateFlow()
+
+    private val movedTransactionsToCategory = mutableMapOf<TransactionFullData, Category>()
 
     fun onLoadClick() {
         emitNewState { copy(showCalendarDialog = true) }
@@ -85,6 +86,7 @@ class HomeViewModel(
                     allLoadedTransactions = transactions,
                 )
             }
+            movedTransactionsToCategory.clear()
         }
     }
 
@@ -92,14 +94,6 @@ class HomeViewModel(
         "${startDate.month.getDisplayName()} " +
                 "${startDate.dayOfMonth} - ${endDate.month.getDisplayName()} " +
                 "${endDate.dayOfMonth}"
-
-    fun displayAddBankAccount() {
-        emitNewState { copy(showAddBankAccount = true) }
-    }
-
-    fun dismissAddBankAccount() {
-        emitNewState { copy(showAddBankAccount = false) }
-    }
 
     fun dismissCalendar() {
         emitNewState { copy(showCalendarDialog = false) }
@@ -109,7 +103,7 @@ class HomeViewModel(
         emitNewState { copy(errorMessage = null) }
     }
 
-    fun moveTransactionToCategory(transaction: Transaction, category: Category) {
+    fun moveTransactionToCategory(transaction: TransactionFullData, category: Category) {
         val categorizationData = stateFlow.value.categorizationData
         val transactionsToMove = if (stateFlow.value.selectedTransactions.isEmpty()) {
             listOf(transaction)
@@ -125,9 +119,12 @@ class HomeViewModel(
                 selectedTransactions = emptySet(),
             )
         }
+        transactionsToMove.forEach {
+            movedTransactionsToCategory[it] = category
+        }
     }
 
-    fun selectTransaction(transaction: Transaction, isSelected: Boolean) {
+    fun selectTransaction(transaction: TransactionFullData, isSelected: Boolean) {
         emitNewState {
             val newSelectedTransactions = if (isSelected) {
                 selectedTransactions.toMutableSet() + transaction
@@ -158,7 +155,8 @@ class HomeViewModel(
 
             val categorizationData = categorizeTransactionsUseCase.execute(
                 stateFlow.value.allLoadedTransactions, categories,
-            )
+            ).let(::applyMovedTransactions)
+
             emitNewState {
                 copy(
                     categorizationData = categorizationData,
@@ -166,6 +164,20 @@ class HomeViewModel(
                 )
             }
         }
+    }
+
+    private fun applyMovedTransactions(
+        categorizationData: CategorizationData,
+    ): CategorizationData {
+        var modifiedCategorizationData = categorizationData
+        movedTransactionsToCategory.forEach { (transactionFullData, category) ->
+            modifiedCategorizationData = moveTransactionsToCategoryUseCase.execute(
+                modifiedCategorizationData,
+                listOf(transactionFullData),
+                category,
+            )
+        }
+        return modifiedCategorizationData
     }
 }
 

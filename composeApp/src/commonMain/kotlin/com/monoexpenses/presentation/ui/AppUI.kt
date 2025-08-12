@@ -62,6 +62,9 @@ fun AppUI(
                             onCategoriesSettingsClicked = {
                                 navController.navigate(Screen.CategoriesConfiguration.name)
                             },
+                            onAddBankAccountsClicked = {
+                                navController.navigate(Screen.AccountsConfiguration.name)
+                            }
                         )
                     }
                     composable(route = Screen.CategoriesConfiguration.name) {

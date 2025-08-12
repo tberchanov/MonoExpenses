@@ -23,6 +23,7 @@ data class AddAccountsState(
     val token: String = "",
     val loadAccountsButtonEnabled: Boolean = false,
     val saveUserAccountsButtonEnabled: Boolean = false,
+    val userName: String = "",
     val selectableBankAccounts: List<SelectableBankAccount>? = null,
     val errorMessage: String? = null,
     val isAccountSaved: Boolean = false,
@@ -50,9 +51,15 @@ class AddAccountsViewModel(
 
     fun loadBankAccounts() {
         viewModelScope.launch(coroutineContext) {
-            val bankAccounts = getAllAccountsUseCase.execute(stateFlow.value.token)
-                .map { SelectableBankAccount(it, false) }
-            emitNewState { copy(selectableBankAccounts = bankAccounts) }
+            val userBankAccounts = getAllAccountsUseCase.execute(stateFlow.value.token)
+            val bankAccounts =
+                userBankAccounts.bankAccounts.map { SelectableBankAccount(it, false) }
+            emitNewState {
+                copy(
+                    selectableBankAccounts = bankAccounts,
+                    userName = userBankAccounts.userData.name ?: "",
+                )
+            }
         }
     }
 
@@ -93,7 +100,8 @@ class AddAccountsViewModel(
                     saveSelectedAccountsUseCase.execute(
                         token,
                         selectableBankAccounts.filter { it.isSelected }
-                            .map { it.bankAccount }
+                            .map { it.bankAccount },
+                        userName,
                     )
                 }
             }

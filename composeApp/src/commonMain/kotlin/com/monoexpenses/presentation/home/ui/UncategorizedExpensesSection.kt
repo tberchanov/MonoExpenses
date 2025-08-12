@@ -22,7 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.presentation.ui.theme.AppColors
 import expensesanalyzer.composeapp.generated.resources.Res
 import expensesanalyzer.composeapp.generated.resources.cross
@@ -32,10 +32,10 @@ import org.jetbrains.compose.resources.painterResource
 fun UncategorizedExpenses(
     modifier: Modifier = Modifier,
     total: String,
-    transactions: List<Transaction>,
-    selectedTransactions: Set<Transaction>,
-    onMoveToCategoryClicked: (Transaction) -> Unit,
-    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    transactions: List<TransactionFullData>,
+    selectedTransactions: Set<TransactionFullData>,
+    onMoveToCategoryClicked: (TransactionFullData) -> Unit,
+    onSelectTransactionClicked: (TransactionFullData, Boolean) -> Unit,
     onCloseSelection: () -> Unit = {},
 ) {
     Column(
@@ -74,24 +74,24 @@ fun UncategorizedExpenses(
         Divider()
         TransactionsHeader()
         val selectedTransactionsIds = remember(selectedTransactions) {
-            selectedTransactions.map { it.id }.toSet()
+            selectedTransactions.map { it.transaction.id }.toSet()
         }
         VerticalList(
             modifier = Modifier.background(Color(0xFFF0F4F4))
                 .fillMaxHeight(),
             items = transactions,
-            key = { it.id },
-        ) { transaction ->
+            key = { it.transaction.id },
+        ) { transactionData ->
             TransactionItem(
-                transaction,
+                transactionData,
                 showCheckBox = selectedTransactions.isNotEmpty(),
-                isChecked = selectedTransactionsIds.contains(transaction.id),
+                isChecked = selectedTransactionsIds.contains(transactionData.transaction.id),
                 showContextMenu = true,
                 onMoveToCategoryClicked = {
-                    onMoveToCategoryClicked(transaction)
+                    onMoveToCategoryClicked(transactionData)
                 },
                 onSelectClicked = {
-                    onSelectTransactionClicked(transaction, it)
+                    onSelectTransactionClicked(transactionData, it)
                 },
             )
         }

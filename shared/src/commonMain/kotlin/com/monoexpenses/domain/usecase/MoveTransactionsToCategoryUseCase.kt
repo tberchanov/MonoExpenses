@@ -2,7 +2,7 @@ package com.monoexpenses.domain.usecase
 
 import com.monoexpenses.domain.model.CategorizationData
 import com.monoexpenses.domain.model.Category
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 
 class MoveTransactionsToCategoryUseCase(
     private val moveTransactionToCategoryUseCase: MoveTransactionToCategoryUseCase,
@@ -10,7 +10,7 @@ class MoveTransactionsToCategoryUseCase(
 
     fun execute(
         categorizationData: CategorizationData,
-        transactionsToMove: List<Transaction>,
+        transactionsToMove: List<TransactionFullData>,
         category: Category,
     ): CategorizationData {
         var modifiedCategorizationData = categorizationData

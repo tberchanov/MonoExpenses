@@ -20,12 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.monoexpenses.domain.model.Category
 import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatMoney
 
 @Composable
 fun MoveTransactionToCategoryDialog(
-    transaction: Transaction,
+    transactionData: TransactionFullData,
     categories: List<Category>,
     onDismiss: () -> Unit,
     onMove: (Category) -> Unit,
@@ -43,7 +44,7 @@ fun MoveTransactionToCategoryDialog(
             Column(
                 modifier = Modifier.padding(8.dp)
             ) {
-                TransactionSummary(transaction)
+                TransactionSummary(transactionData.transaction)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     "Select Category",

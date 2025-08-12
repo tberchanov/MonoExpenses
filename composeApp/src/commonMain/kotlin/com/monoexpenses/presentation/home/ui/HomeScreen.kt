@@ -20,8 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.monoexpenses.domain.model.CategorizationData
 import com.monoexpenses.domain.model.Category
-import com.monoexpenses.domain.model.Transaction
-import com.monoexpenses.presentation.add.accounts.ui.AddAccountsDialog
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.presentation.home.HomeViewModel
 import com.monoexpenses.presentation.home.ui.calendar.CalendarDialog
 import com.monoexpenses.presentation.ui.ErrorDialog
@@ -34,6 +33,7 @@ val HOME_CONTENT_PADDING = 14.dp
 fun HomeScreen(
     isCategoriesModified: Boolean = false,
     onCategoriesSettingsClicked: () -> Unit,
+    onAddBankAccountsClicked: () -> Unit,
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
     if (isCategoriesModified) {
@@ -55,7 +55,7 @@ fun HomeScreen(
                 viewModel.onLoadClick()
             },
             onAddBankAccountsClick = {
-                viewModel.displayAddBankAccount()
+                onAddBankAccountsClicked()
             },
             selectedDateMessage = state.selectedDateMessage,
         )
@@ -65,7 +65,7 @@ fun HomeScreen(
                 HomeLoading(loading)
             }
             if (categorizationData != null) {
-                var moveTransactionToCategory: Transaction? by remember { mutableStateOf(null) }
+                var moveTransactionToCategory: TransactionFullData? by remember { mutableStateOf(null) }
                 HomeData(
                     categorizationData,
                     selectedTransactions,
@@ -83,7 +83,7 @@ fun HomeScreen(
                 )
                 moveTransactionToCategory?.let { transaction ->
                     MoveTransactionToCategoryDialog(
-                        transaction = transaction,
+                        transactionData = transaction,
                         categories = categories,
                         onDismiss = { moveTransactionToCategory = null },
                         onMove = { category ->
@@ -97,13 +97,6 @@ fun HomeScreen(
                     errorMessage,
                     onDismiss = {
                         viewModel.resetError()
-                    }
-                )
-            }
-            if (showAddBankAccount) {
-                AddAccountsDialog(
-                    onDismiss = {
-                        viewModel.dismissAddBankAccount()
                     }
                 )
             }
@@ -124,11 +117,11 @@ fun HomeScreen(
 @Composable
 expect fun HomeData(
     categorizationData: CategorizationData,
-    selectedTransactions: Set<Transaction>,
+    selectedTransactions: Set<TransactionFullData>,
     categories: List<Category>,
-    onMoveToCategoryClicked: (Transaction) -> Unit,
+    onMoveToCategoryClicked: (TransactionFullData) -> Unit,
     onCategoriesSettingsClicked: () -> Unit,
-    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    onSelectTransactionClicked: (TransactionFullData, Boolean) -> Unit,
     onCloseSelection: () -> Unit = {},
 )
 

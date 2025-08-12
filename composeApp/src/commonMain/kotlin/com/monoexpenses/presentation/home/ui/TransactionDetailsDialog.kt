@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatEpochSecondsToTimeDayMonthWeek
 import com.monoexpenses.utils.formatMoney
@@ -27,7 +27,7 @@ import com.monoexpenses.utils.setText
 
 @Composable
 fun TransactionDetailsDialog(
-    transaction: Transaction,
+    transactionData: TransactionFullData,
     onCloseDialog: () -> Unit,
 ) {
     AlertDialog(
@@ -45,28 +45,41 @@ fun TransactionDetailsDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val clipboardManager = LocalClipboardManager.current
+                val userName = transactionData.userData.name ?: "Unknown"
+                DetailRow("User Name", userName) {
+                    clipboardManager.setText(userName)
+                }
+                DetailRow("Account Name", transactionData.account.name) {
+                    clipboardManager.setText(transactionData.account.name)
+                }
+                transactionData.account.maskedPan?.let { maskedPanList ->
+                    val maskedPan = maskedPanList.joinToString(", ")
+                    DetailRow("Masked PAN", maskedPan) {
+                        clipboardManager.setText(maskedPan)
+                    }
+                }
                 val formattedDate =
-                    remember { formatEpochSecondsToTimeDayMonthWeek(transaction.time) }
+                    remember { formatEpochSecondsToTimeDayMonthWeek(transactionData.transaction.time) }
                 DetailRow("Date", formattedDate) {
                     clipboardManager.setText(formattedDate)
                 }
                 val formattedAmount =
-                    remember(transaction.amount) { formatMoney(transaction.amount) }
+                    remember(transactionData.transaction.amount) { formatMoney(transactionData.transaction.amount) }
                 DetailRow("Amount", formattedAmount) {
                     clipboardManager.setText(formattedAmount)
                 }
-                DetailRow("Description", transaction.description) {
-                    clipboardManager.setText(transaction.description)
+                DetailRow("Description", transactionData.transaction.description) {
+                    clipboardManager.setText(transactionData.transaction.description)
                 }
-                DetailRow("MCC", transaction.mcc.toString()) {
-                    clipboardManager.setText(transaction.mcc.toString())
+                DetailRow("MCC", transactionData.transaction.mcc.toString()) {
+                    clipboardManager.setText(transactionData.transaction.mcc.toString())
                 }
                 val uriHandler = LocalUriHandler.current
                 val mccUrl = "https://mcc.in.ua/"
                 DetailRow("", mccUrl, true) {
                     uriHandler.openUri(mccUrl)
                 }
-                transaction.receiptId?.let { receiptId ->
+                transactionData.transaction.receiptId?.let { receiptId ->
                     DetailRow("Receipt ID", receiptId) {
                         clipboardManager.setText(receiptId)
                     }

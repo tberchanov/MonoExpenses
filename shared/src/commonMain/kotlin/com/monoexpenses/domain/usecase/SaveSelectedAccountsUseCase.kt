@@ -13,10 +13,10 @@ class SaveSelectedAccountsUseCase(
     private val accountsRepository: BankAccountsRepository,
 ) {
 
-    suspend fun execute(token: String, accounts: List<BankAccount>) {
+    suspend fun execute(token: String, accounts: List<BankAccount>, userName: String) {
         Logger.d(TAG) { "execute ${accounts.size}" }
         val userId = userDataRepository.getNewUserDataId()
-        userDataRepository.saveUserData(UserData(userId, token))
+        userDataRepository.saveUserData(UserData(userId, token, userName))
         accountsRepository.saveSelectedAccounts(userId, accounts)
     }
 }

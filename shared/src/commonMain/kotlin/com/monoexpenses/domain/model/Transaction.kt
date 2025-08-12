@@ -6,5 +6,5 @@ data class Transaction(
     val amount: Long,
     val description: String,
     val time: Long,
-    val receiptId: String?
+    val receiptId: String?,
 )

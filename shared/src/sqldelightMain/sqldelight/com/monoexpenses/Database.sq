@@ -1,12 +1,13 @@
 CREATE TABLE IF NOT EXISTS UserData (
-    userId TEXT NOT NULL PRIMARY KEY
+    userId TEXT NOT NULL PRIMARY KEY,
+    userName TEXT
 );
 
 countUserData:
 SELECT COUNT(*) FROM UserData;
 
 insertUserData:
-INSERT INTO UserData (userId) VALUES (?);
+INSERT INTO UserData (userId, userName) VALUES (?, ?);
 
 deleteUserData:
 DELETE FROM UserData WHERE userId = ?;
@@ -22,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Account (
 );
 
 insertAccount:
-INSERT INTO Account (accountId, userId, name, currency) VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO Account (accountId, userId, name, currency) VALUES (?, ?, ?, ?);
 
 deleteAccountByUserId:
 DELETE FROM Account WHERE userId = ?;

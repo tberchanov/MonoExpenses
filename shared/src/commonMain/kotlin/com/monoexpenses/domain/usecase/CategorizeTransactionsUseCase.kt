@@ -6,15 +6,19 @@ import com.monoexpenses.domain.model.CategorizedTransactions
 import com.monoexpenses.domain.model.Category
 import com.monoexpenses.domain.model.CategoryFilter
 import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 
 private const val TAG = "CategorizeTransactionsUseCase"
 
 class CategorizeTransactionsUseCase {
 
-    fun execute(transactions: List<Transaction>, categories: List<Category>): CategorizationData {
+    fun execute(
+        transactions: List<TransactionFullData>,
+        categories: List<Category>
+    ): CategorizationData {
         Logger.d(TAG) { "execute: ${transactions.size} ${categories.size}" }
-        val uncategorizedTransactions = mutableListOf<Transaction>()
-        val categoriesMap = mutableMapOf<Category, MutableList<Transaction>>()
+        val uncategorizedTransactions = mutableListOf<TransactionFullData>()
+        val categoriesMap = mutableMapOf<Category, MutableList<TransactionFullData>>()
 
         transactions.forEach { transaction ->
             val category = getTransactionCategory(transaction, categories)
@@ -27,20 +31,20 @@ class CategorizeTransactionsUseCase {
             }
         }
 
-        uncategorizedTransactions.sortBy { it.time }
+        uncategorizedTransactions.sortBy { it.transaction.time }
 
         val categorizedTransactions = categoriesMap.map { (category, transactions) ->
             CategorizedTransactions(
                 category,
                 transactions,
-                totalExpenses = calcTotalExpenses(transactions)
+                totalExpenses = calcTotalExpenses(transactions.map { it.transaction })
             )
         }.sortedBy { it.category.name.lowercase() }
 
         return CategorizationData(
             categorizedTransactions,
             uncategorizedTransactions,
-            uncategorizedTotalExpenses = calcTotalExpenses(uncategorizedTransactions),
+            uncategorizedTotalExpenses = calcTotalExpenses(uncategorizedTransactions.map { it.transaction }),
         )
     }
 
@@ -49,12 +53,13 @@ class CategorizeTransactionsUseCase {
     }
 
     private fun getTransactionCategory(
-        transaction: Transaction,
+        transactionData: TransactionFullData,
         categories: List<Category>,
     ): Category? {
         val matchedCategories = mutableListOf<Pair<Category, CategoryFilter>>()
         categories.forEach { category ->
-            val matchedFilter = getTransactionMatchingFilter(transaction, category.categoryFilters)
+            val matchedFilter =
+                getTransactionMatchingFilter(transactionData.transaction, category.categoryFilters)
             if (matchedFilter != null) {
                 matchedCategories.add(category to matchedFilter)
             }
@@ -63,7 +68,7 @@ class CategorizeTransactionsUseCase {
         if (matchedCategories.size > 1) {
             val matchedCategoriesStr =
                 matchedCategories.joinToString { "{${it.first.id} ${it.first.name}: ${it.second}}" }
-            throw IllegalStateException("Transaction is matched for a few categories. $transaction -> $matchedCategoriesStr")
+            throw IllegalStateException("Transaction is matched for a few categories. ${transactionData.transaction} -> $matchedCategoriesStr")
         }
         return matchedCategories.firstOrNull()?.first
     }

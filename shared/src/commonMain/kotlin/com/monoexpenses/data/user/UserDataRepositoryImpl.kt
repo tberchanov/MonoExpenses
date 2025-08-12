@@ -13,7 +13,7 @@ internal class UserDataRepositoryImpl(
 
     override suspend fun saveUserData(userData: UserData) {
         Logger.d(TAG) { "saveUserData: ${userData.id}" }
-        localUserDataSource.write(userData.id)
+        localUserDataSource.write(userData.id, userData.name ?: "")
         secureUserDataSource.writeToken(userData.id, userData.token)
     }
 
@@ -27,12 +27,13 @@ internal class UserDataRepositoryImpl(
     }
 
     override suspend fun getAllUserData(): List<UserData> {
-        val ids = localUserDataSource.getAllIds()
+        val ids = localUserDataSource.getAllUsers()
         val data = ids.map {
-            val token = secureUserDataSource.readToken(it)
+            val token = secureUserDataSource.readToken(it.id)
             checkNotNull(token)
             UserData(
-                id = it,
+                id = it.id,
+                name = it.name,
                 token = token,
             )
         }

@@ -3,6 +3,8 @@ package com.monoexpenses.data.accounts
 import com.monoexpenses.data.dto.BankAccountsResponseDto
 import com.monoexpenses.data.network.httpClient
 import com.monoexpenses.domain.model.BankAccount
+import com.monoexpenses.domain.model.UserBankAccounts
+import com.monoexpenses.domain.model.UserData
 import com.monoexpenses.exception.UnexpectedResponseException
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -12,7 +14,7 @@ import io.ktor.http.isSuccess
 
 internal class BankAccountsNetworkDataSource {
 
-    suspend fun loadAllAccounts(token: String): List<BankAccount> {
+    suspend fun loadAllAccounts(token: String): UserBankAccounts {
         val response = httpClient.get("$BASE_URL/personal/client-info") {
             headers {
                 append("X-Token", token)
@@ -21,14 +23,23 @@ internal class BankAccountsNetworkDataSource {
 
         if (response.status.isSuccess()) {
             val accountsResponse: BankAccountsResponseDto = response.body()
-            return accountsResponse.accounts.map { accountDto ->
+            val bankAccounts = accountsResponse.accounts.map { accountDto ->
                 BankAccount(
                     id = accountDto.id,
                     name = accountDto.name,
                     currency = currencyCodeToNameMap[accountDto.currencyCode]
                         ?: accountDto.currencyCode.toString(),
+                    maskedPan = accountDto.maskedPan,
                 )
             }
+            return UserBankAccounts(
+                bankAccounts = bankAccounts,
+                userData = UserData(
+                    id = accountsResponse.id,
+                    token = token,
+                    name = accountsResponse.name,
+                )
+            )
         } else {
             throw UnexpectedResponseException(
                 statusCode = response.status.value,

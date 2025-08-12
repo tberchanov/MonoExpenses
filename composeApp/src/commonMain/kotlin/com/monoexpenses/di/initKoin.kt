@@ -1,5 +1,6 @@
 package com.monoexpenses.di
 
+import com.monoexpenses.presentation.accounts.configuration.AccountsConfigurationViewModel
 import com.monoexpenses.presentation.add.accounts.AddAccountsViewModel
 import com.monoexpenses.presentation.categories.configuration.CategoriesConfigurationViewModel
 import com.monoexpenses.presentation.home.HomeViewModel
@@ -22,4 +23,5 @@ val appModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::AddAccountsViewModel)
     viewModelOf(::CategoriesConfigurationViewModel)
+    viewModelOf(::AccountsConfigurationViewModel)
 }

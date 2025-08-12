@@ -7,17 +7,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.monoexpenses.domain.model.CategorizationData
 import com.monoexpenses.domain.model.Category
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.utils.formatMoney
 
 @Composable
 actual fun HomeData(
     categorizationData: CategorizationData,
-    selectedTransactions: Set<Transaction>,
+    selectedTransactions: Set<TransactionFullData>,
     categories: List<Category>,
-    onMoveToCategoryClicked: (Transaction) -> Unit,
+    onMoveToCategoryClicked: (TransactionFullData) -> Unit,
     onCategoriesSettingsClicked: () -> Unit,
-    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    onSelectTransactionClicked: (TransactionFullData, Boolean) -> Unit,
     onCloseSelection: () -> Unit,
 ) {
     Row {

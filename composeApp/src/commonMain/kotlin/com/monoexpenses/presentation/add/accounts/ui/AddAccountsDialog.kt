@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -81,6 +82,15 @@ fun AddAccountsDialog(
                 state.selectableBankAccounts?.let { accounts ->
                     if (accounts.isNotEmpty()) {
                         LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
+                            item(state.userName) {
+                                Text(
+                                    state.userName,
+                                    Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
                             items(accounts) { account ->
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,

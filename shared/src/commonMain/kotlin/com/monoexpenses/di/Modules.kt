@@ -1,10 +1,10 @@
 package com.monoexpenses.di
 
-import com.monoexpenses.data.TransactionsRepositoryMonoImpl
 import com.monoexpenses.data.accounts.BankAccountsNetworkDataSource
 import com.monoexpenses.data.accounts.BankAccountsRepositoryImpl
 import com.monoexpenses.data.category.CategoryRepositoryImpl
 import com.monoexpenses.data.category.DefaultCategoriesDataSource
+import com.monoexpenses.data.transaction.TransactionsRepositoryMonoImpl
 import com.monoexpenses.data.user.UserDataRepositoryImpl
 import com.monoexpenses.domain.repository.BankAccountsRepository
 import com.monoexpenses.domain.repository.CategoryRepository

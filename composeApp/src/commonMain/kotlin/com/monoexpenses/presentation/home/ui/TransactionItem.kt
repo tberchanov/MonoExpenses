@@ -16,14 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.presentation.ui.theme.AppColors
 import com.monoexpenses.utils.formatEpochSecondsToDayMonth
 import com.monoexpenses.utils.formatMoney
 
 @Composable
 fun TransactionItem(
-    transaction: Transaction,
+    transactionData: TransactionFullData,
     showContextMenu: Boolean = false,
     showCheckBox: Boolean = false,
     isChecked: Boolean = false,
@@ -56,12 +56,15 @@ fun TransactionItem(
                     )
                 )
             }
-            Text(formatEpochSecondsToDayMonth(transaction.time), modifier = Modifier.weight(1f))
             Text(
-                remember(transaction.amount) { formatMoney(transaction.amount) },
+                formatEpochSecondsToDayMonth(transactionData.transaction.time),
                 modifier = Modifier.weight(1f),
             )
-            Text(transaction.description, modifier = Modifier.weight(2f))
+            Text(
+                remember(transactionData.transaction.amount) { formatMoney(transactionData.transaction.amount) },
+                modifier = Modifier.weight(1f),
+            )
+            Text(transactionData.transaction.description, modifier = Modifier.weight(2f))
         }
 
         if (showDropDown) {
@@ -91,7 +94,7 @@ fun TransactionItem(
 
     if (showDialog) {
         TransactionDetailsDialog(
-            transaction,
+            transactionData,
             onCloseDialog = {
                 showDialog = false
             },

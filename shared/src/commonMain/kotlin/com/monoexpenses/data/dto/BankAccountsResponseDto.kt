@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class BankAccountsResponseDto(
+    @SerialName("clientId")
+    val id: String,
     @SerialName("name")
     val name: String,
     @SerialName("accounts")

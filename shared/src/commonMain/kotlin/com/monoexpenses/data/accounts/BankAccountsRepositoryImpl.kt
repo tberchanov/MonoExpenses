@@ -1,6 +1,7 @@
 package com.monoexpenses.data.accounts
 
 import com.monoexpenses.domain.model.BankAccount
+import com.monoexpenses.domain.model.UserBankAccounts
 import com.monoexpenses.domain.repository.BankAccountsRepository
 
 internal class BankAccountsRepositoryImpl(
@@ -16,7 +17,7 @@ internal class BankAccountsRepositoryImpl(
         bankAccountsLocalDataSource.saveSelectedAccounts(userId, bankAccounts)
     }
 
-    override suspend fun loadAllAccounts(token: String): List<BankAccount> {
+    override suspend fun loadAllAccounts(token: String): UserBankAccounts {
         return bankAccountsNetworkDataSource.loadAllAccounts(token)
     }
 }
