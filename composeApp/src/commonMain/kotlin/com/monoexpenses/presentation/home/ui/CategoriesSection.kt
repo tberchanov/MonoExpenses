@@ -60,6 +60,7 @@ fun Categories(
         }
         Divider()
         ExpandableLazyColumn(
+            keyPrefix = "home-categories-",
             expandableItems = categorizedTransactions.map {
                 ExpandableItem(
                     it,

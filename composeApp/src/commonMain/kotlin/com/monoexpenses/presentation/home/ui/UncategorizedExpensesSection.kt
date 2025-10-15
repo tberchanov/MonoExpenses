@@ -80,7 +80,7 @@ fun UncategorizedExpenses(
             modifier = Modifier.background(Color(0xFFF0F4F4))
                 .fillMaxHeight(),
             items = transactions,
-            key = { it.transaction.id },
+            key = { "home-uncategorized-" + it.transaction.id + "-" + it.account.id },
         ) { transactionData ->
             TransactionItem(
                 transactionData,

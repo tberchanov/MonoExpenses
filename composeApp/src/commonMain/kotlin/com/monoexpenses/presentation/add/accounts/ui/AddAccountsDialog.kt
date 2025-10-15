@@ -82,7 +82,7 @@ fun AddAccountsDialog(
                 state.selectableBankAccounts?.let { accounts ->
                     if (accounts.isNotEmpty()) {
                         LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
-                            item(state.userName) {
+                            item(key = "add-accounts-header-" + state.userName) {
                                 Text(
                                     state.userName,
                                     Modifier.fillMaxWidth(),
@@ -91,7 +91,10 @@ fun AddAccountsDialog(
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
-                            items(accounts) { account ->
+                            items(
+                                items = accounts,
+                                key = { selectable -> "add-accounts-row-" + selectable.bankAccount.id }
+                            ) { account ->
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier

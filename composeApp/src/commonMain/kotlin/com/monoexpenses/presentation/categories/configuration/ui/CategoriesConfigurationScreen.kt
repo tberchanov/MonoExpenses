@@ -128,6 +128,7 @@ private fun CategoriesConfigurationList(
             onClick = onAddCategoryClicked
         )
         ExpandableLazyColumn(
+            keyPrefix = "config-categories-",
             expandableItems = categories.map { category ->
                 ExpandableItem(
                     data = category,

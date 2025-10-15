@@ -71,7 +71,10 @@ fun AccountsConfigurationScreen(
             }
             data?.let { users ->
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(users) { userBankAccounts ->
+                    items(
+                        items = users,
+                        key = { "accounts-config-user-" + it.userData.id }
+                    ) { userBankAccounts ->
                         UserAccountsItem(
                             userBankAccounts = userBankAccounts,
                             onDelete = { viewModel.deleteUser(userBankAccounts.userData.id) },

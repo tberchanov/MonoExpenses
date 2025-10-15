@@ -17,7 +17,7 @@ class MoveTransactionToCategoryUseCase {
             .apply { remove(transactionToMove) }
 
         val categorizedTransactions = categorizationData.categorizedTransactions.firstOrNull() {
-            it.category == category
+            it.category.id == category.id
         }
 
         val categorizedTransactionsList = categorizationData.categorizedTransactions.toMutableList()

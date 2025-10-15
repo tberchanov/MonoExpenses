@@ -171,11 +171,16 @@ class HomeViewModel(
     ): CategorizationData {
         var modifiedCategorizationData = categorizationData
         movedTransactionsToCategory.forEach { (transactionFullData, category) ->
-            modifiedCategorizationData = moveTransactionsToCategoryUseCase.execute(
-                modifiedCategorizationData,
-                listOf(transactionFullData),
-                category,
-            )
+            val isUncategorizedTransaction =
+                modifiedCategorizationData.uncategorizedTransactions.map { it.transaction.id }
+                    .contains(transactionFullData.transaction.id)
+            if (isUncategorizedTransaction) {
+                modifiedCategorizationData = moveTransactionsToCategoryUseCase.execute(
+                    modifiedCategorizationData,
+                    listOf(transactionFullData),
+                    category,
+                )
+            }
         }
         return modifiedCategorizationData
     }

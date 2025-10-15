@@ -9,6 +9,7 @@ import com.monoexpenses.domain.model.Transaction
 import com.monoexpenses.domain.model.TransactionFullData
 
 private const val TAG = "CategorizeTransactionsUseCase"
+private const val REGEX_PREFIX = "\r"
 
 class CategorizeTransactionsUseCase {
 
@@ -78,19 +79,29 @@ class CategorizeTransactionsUseCase {
         filters: List<CategoryFilter>,
     ): CategoryFilter? {
         val matchedFilter = filters.firstOrNull { filter ->
-            val mccMatching = filter.transactionMcc?.equals(transaction.mcc) ?: true
-            val amountMatching = filter.transactionAmount?.equals(transaction.amount) ?: true
-            val descriptionMatching =
-                filter.transactionDescription?.let {
-                    try {
-                        Regex(it).matches(transaction.description)
-                    } catch (e: Exception) {
-                        Logger.e(TAG) { "Invalid regex pattern: $it" }
-                        transaction.description == it
-                    }
-                } ?: true
-            mccMatching && amountMatching && descriptionMatching
+            isTransactionMatchingFilter(transaction, filter)
         }
         return matchedFilter
+    }
+
+    private fun isTransactionMatchingFilter(
+        transaction: Transaction,
+        filter: CategoryFilter,
+    ): Boolean {
+        val mccMatching = filter.transactionMcc?.equals(transaction.mcc) ?: true
+        val amountMatching = filter.transactionAmount?.equals(transaction.amount) ?: true
+        val isDescriptionRegex = filter.transactionDescription?.startsWith(REGEX_PREFIX) ?: false
+        val descriptionMatching =
+            if (isDescriptionRegex) {
+                try {
+                    Regex(filter.transactionDescription).matches(transaction.description)
+                } catch (e: Exception) {
+                    Logger.e(TAG) { "Invalid regex pattern: ${filter.transactionDescription}" }
+                    transaction.description == filter.transactionDescription
+                }
+            } else {
+                transaction.description == filter.transactionDescription
+            }
+        return mccMatching && amountMatching && descriptionMatching
     }
 }

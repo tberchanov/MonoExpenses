@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,18 +25,24 @@ import androidx.compose.ui.Modifier
 fun <T> ExpandableLazyColumn(
     expandableItems: List<ExpandableItem<T>>,
     modifier: Modifier = Modifier,
+    keyPrefix: String = "",
     collapsedItemContent: @Composable (ExpandableItem<T>) -> Unit,
     expandedItemContent: @Composable (ExpandableItem<T>) -> Unit,
     onItemExpanded: (String, Boolean) -> Unit = { _, _ -> }
 ) {
     var state by mutableStateOf(expandableItems)
 
+    // Keep internal state in sync when caller provides a new list instance
+    LaunchedEffect(expandableItems) {
+        state = expandableItems
+    }
+
     LazyColumn(
         modifier,
     ) {
         itemsIndexed(
             state,
-            { _, item -> item.id }
+            { _, item -> keyPrefix + item.id }
         ) { index, item ->
             Column {
                 Box(Modifier.clickable {

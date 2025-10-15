@@ -54,7 +54,10 @@ fun MoveTransactionToCategoryDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn {
-                    items(categories) { category ->
+                    items(
+                        items = categories,
+                        key = { "dialog-move-category-" + it.id }
+                    ) { category ->
                         CategoryItem(
                             category = category,
                             onClick = {
