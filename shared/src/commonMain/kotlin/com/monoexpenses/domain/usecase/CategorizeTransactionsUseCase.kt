@@ -90,8 +90,10 @@ class CategorizeTransactionsUseCase {
     ): Boolean {
         val mccMatching = filter.transactionMcc?.equals(transaction.mcc) ?: true
         val amountMatching = filter.transactionAmount?.equals(transaction.amount) ?: true
-        val isDescriptionRegex = filter.transactionDescription?.startsWith(REGEX_PREFIX) ?: false
-        val descriptionMatching =
+        val descriptionMatching = if (filter.transactionDescription == null) {
+            true
+        } else {
+            val isDescriptionRegex = filter.transactionDescription.startsWith(REGEX_PREFIX)
             if (isDescriptionRegex) {
                 try {
                     Regex(filter.transactionDescription).matches(transaction.description)
@@ -102,6 +104,7 @@ class CategorizeTransactionsUseCase {
             } else {
                 transaction.description == filter.transactionDescription
             }
+        }
         return mccMatching && amountMatching && descriptionMatching
     }
 }
