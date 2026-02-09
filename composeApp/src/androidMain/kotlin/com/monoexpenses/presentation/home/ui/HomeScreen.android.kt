@@ -18,18 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.monoexpenses.domain.model.CategorizationData
 import com.monoexpenses.domain.model.Category
-import com.monoexpenses.domain.model.Transaction
+import com.monoexpenses.domain.model.TransactionFullData
 import com.monoexpenses.presentation.ui.theme.AppColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 actual fun HomeData(
     categorizationData: CategorizationData,
-    selectedTransactions: Set<Transaction>,
+    selectedTransactions: Set<TransactionFullData>,
     categories: List<Category>,
-    onMoveToCategoryClicked: (Transaction) -> Unit,
+    onMoveToCategoryClicked: (TransactionFullData) -> Unit,
     onCategoriesSettingsClicked: () -> Unit,
-    onSelectTransactionClicked: (Transaction, Boolean) -> Unit,
+    onSelectTransactionClicked: (TransactionFullData, Boolean) -> Unit,
     onCloseSelection: () -> Unit,
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
